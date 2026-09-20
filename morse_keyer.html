@@ -124,16 +124,6 @@
             background: #cce4f7;
         }
 
-        .btn-macro-cancel {
-            background: #f8d7da;
-            border-color: #f5c6cb;
-            color: #721c24;
-        }
-
-        .btn-macro-cancel:active {
-            background: #f5c6cb;
-        }
-
         /* Text Transmitter Area */
         .sent-text-display {
             background-color: #111;
@@ -293,11 +283,11 @@
         .touch-pad-right { background-color: #777777; }
 
         .touch-pad-middle.dit-active {
-            background-color: #4b0082 !important; /* Dark Purple for Dit */
+            background-color: #4b0082 !important;
         }
 
         .touch-pad-middle.dah-active {
-            background-color: #004d1a !important; /* Dark Green for Dah */
+            background-color: #004d1a !important;
         }
 
         .touch-pad:active, .touch-pad.active {
@@ -317,7 +307,7 @@
             border-radius: 4px;
         }
 
-        /* Modals (Help & Shorthand Config) */
+        /* Modals */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -378,12 +368,10 @@
 <body>
 
 <div class="window">
-    <!-- Title Bar acts as Mouse Keying Area -->
     <div id="titleKeyArea" class="title-bar" title="Left-click = Dit | Right-click = Dah">
         <span>☖</span> Web Morse Keyer v1.0
     </div>
 
-    <!-- Volume Control (Always Visible) -->
     <fieldset>
         <legend>Volume</legend>
         <div class="field-row">
@@ -392,29 +380,26 @@
         </div>
     </fieldset>
 
-    <!-- Text Transmitter (TX) Panel (Always Visible) -->
     <fieldset>
         <legend>Text Transmitter (TX)</legend>
         
-        <!-- Shorthand Macro Buttons (F1-F5) -->
         <div class="shorthand-bar">
             <button id="btnF1" class="btn-macro" title="Press or Long-Press to Configure">F1</button>
             <button id="btnF2" class="btn-macro" title="Press or Long-Press to Configure">F2</button>
             <button id="btnF3" class="btn-macro" title="Press or Long-Press to Configure">F3</button>
             <button id="btnF4" class="btn-macro" title="Press or Long-Press to Configure">F4</button>
-            <button id="btnF5" class="btn-macro btn-macro-cancel" title="F5: Clear unsent text">F5</button>
+            <button id="btnF5" class="btn-macro" title="Press or Long-Press to Configure">F5</button>
         </div>
 
         <div id="sentDisplay" class="sent-text-display"></div>
-        <textarea id="txInput" class="tx-textarea" placeholder="Type text or tap F1-F4... (Ctrl+Enter to Start/Stop TX)"></textarea>
+        <textarea id="txInput" class="tx-textarea" placeholder="Type text or tap F1-F5... (Ctrl+Enter to Start/Stop TX)"></textarea>
         
         <div style="display: flex; gap: 10px; margin-top: 8px;">
             <button id="btnTX" class="btn btn-tx" style="flex: 2;">TX</button>
-            <button id="btnClearSent" class="btn" style="flex: 1;">Clear</button>
+            <button id="btnUndoClear" class="btn" style="flex: 1.5; font-size:0.9rem;" title="Tap: Undo last F-key insertion (up to 3 levels) | Long-Press: Clear all">Undo/Clear</button>
         </div>
     </fieldset>
 
-    <!-- Collapsible Settings Panel -->
     <div class="collapsible-header">
         <div id="settingsTitleClick" class="collapsible-title-click">
             <span>⚙ Settings</span>
@@ -424,7 +409,6 @@
     </div>
 
     <div id="settingsContent" class="collapsible-content">
-        <!-- Speed & Modes -->
         <fieldset>
             <legend>Keyer Mode & Speed</legend>
             <div class="field-row">
@@ -455,7 +439,6 @@
             </div>
         </fieldset>
 
-        <!-- Audio Settings -->
         <fieldset>
             <legend>Sound Settings</legend>
             <div class="field-row">
@@ -476,7 +459,6 @@
             </div>
         </fieldset>
 
-        <!-- Serial I/O Panel -->
         <fieldset>
             <legend>Serial I/O</legend>
             <div class="field-row">
@@ -492,10 +474,8 @@
         </fieldset>
     </div>
 
-    <!-- Info Log -->
     <div id="log"></div>
 
-    <!-- Touch Screen Input Bar -->
     <div class="touch-pad-container">
         <div id="touchLeft" class="touch-pad touch-pad-left">L</div>
         <div id="touchStraight" class="touch-pad touch-pad-middle">S</div>
@@ -503,7 +483,6 @@
     </div>
 </div>
 
-<!-- Custom Help Screen Modal -->
 <div id="helpModal" class="modal-overlay">
     <div class="modal-card">
         <h2 style="margin-top:0;">Welcome to Web Morse Keyer 1.0!</h2>
@@ -537,9 +516,10 @@
         <p>Shortcuts & Shorthand Keys:</p>
         <table class="help-table">
             <tbody>
-                <tr><td>F1 – F4</td><td>Insert Shorthand Text</td></tr>
-                <tr><td>F5</td><td>Cancel / Clear unsent text</td></tr>
+                <tr><td>F1 – F5</td><td>Insert Shorthand Text</td></tr>
                 <tr><td>Long-Press F1–F5</td><td>Configure Shorthands</td></tr>
+                <tr><td>Undo/Clear (Tap)</td><td>Undo last F-key insertion (3 levels)</td></tr>
+                <tr><td>Undo/Clear (Hold)</td><td>Clear entire unsent text box</td></tr>
                 <tr><td>\</td><td>Straight key</td></tr>
                 <tr><td>- / =</td><td>Adjust Speed (WPM)</td></tr>
                 <tr><td>CTRL-ENTER</td><td>Toggle TX</td></tr>
@@ -553,11 +533,10 @@
     </div>
 </div>
 
-<!-- Shorthand Configuration Modal -->
 <div id="macroModal" class="modal-overlay">
     <div class="modal-card">
         <h2 style="margin-top:0; color: var(--accent-blue);">Shorthand Configurations</h2>
-        <p style="font-size: 0.85rem; color: #555; margin-bottom: 12px;">Define custom shorthand texts to send via F1–F4 buttons or keyboard keys:</p>
+        <p style="font-size: 0.85rem; color: #555; margin-bottom: 12px;">Define custom shorthand texts to send via F1–F5 buttons or keyboard keys:</p>
 
         <div class="macro-config-row">
             <label for="cfgF1">F1:</label>
@@ -577,7 +556,7 @@
         </div>
         <div class="macro-config-row">
             <label for="cfgF5">F5:</label>
-            <input type="text" id="cfgF5" value="[CANCEL / CLEAR UNSENT TEXT]" disabled style="background:#eee; color:#666;">
+            <input type="text" id="cfgF5" placeholder="e.g. RRR 73">
         </div>
 
         <div style="display: flex; gap: 10px; margin-top: 15px;">
@@ -588,23 +567,19 @@
 </div>
 
 <script>
-    // Constants
     const RISE_FALL_MS = 8;
     const STORAGE_KEY = 'web_morse_keyer_cfg_v1';
 
-    // Global Audio Context & Nodes
     let audioCtx = null;
     let oscNode = null;
     let envelopeGainNode = null;
     let masterGainNode = null;
     let isAudible = false;
 
-    // Serial Port Variables
     let activePort = null;
     let pollInterval = null;
     let authorizedPorts = [];
 
-    // State Flags
     let isDitPressed = false;
     let isDahPressed = false;
     let isDirectTonePressed = false;
@@ -613,23 +588,23 @@
     let lastPressed = null;    
     let latchMemory = null;    
 
-    // TX Engine
     let isTXActive = false;
     let txTimer = null;
 
-    // Touch States
     let touchDit = false;
     let touchDah = false;
+    
+    // 3-Level Undo Stack History
+    let insertedHistory = [];
 
-    // Shorthand Macros (Default Values)
     let shorthandMacros = {
         F1: "CQ CQ CQ DE A65IV K",
         F2: "UR 599 BK",
         F3: "TU 73 SK",
-        F4: "QRZ? DE A65IV"
+        F4: "QRZ? DE A65IV",
+        F5: "RRR 73"
     };
 
-    // UI Elements
     const wpmSlider = document.getElementById('wpmSlider');
     const wpmVal = document.getElementById('wpmVal');
     const toneFreqSlider = document.getElementById('toneFreqSlider');
@@ -649,7 +624,7 @@
     const txInput = document.getElementById('txInput');
     const sentDisplay = document.getElementById('sentDisplay');
     const btnTX = document.getElementById('btnTX');
-    const btnClearSent = document.getElementById('btnClearSent');
+    const btnUndoClear = document.getElementById('btnUndoClear');
     const btnHelpInline = document.getElementById('btnHelpInline');
     const helpModal = document.getElementById('helpModal');
     const closeHelpModal = document.getElementById('closeHelpModal');
@@ -657,12 +632,12 @@
     const settingsContent = document.getElementById('settingsContent');
     const settingsArrow = document.getElementById('settingsArrow');
 
-    // Macro Config Elements
     const macroModal = document.getElementById('macroModal');
     const cfgF1 = document.getElementById('cfgF1');
     const cfgF2 = document.getElementById('cfgF2');
     const cfgF3 = document.getElementById('cfgF3');
     const cfgF4 = document.getElementById('cfgF4');
+    const cfgF5 = document.getElementById('cfgF5');
     const btnSaveMacros = document.getElementById('btnSaveMacros');
     const btnCancelMacros = document.getElementById('btnCancelMacros');
 
@@ -690,147 +665,8 @@
         div.scrollTop = div.scrollHeight;
     }
 
-    // --- localStorage Parameter Management ---
-    function saveAllParams() {
-        const config = {
-            wpm: wpmSlider.value,
-            mode: getMode(),
-            modeA: chkModeA.checked,
-            swap: chkSwap.checked,
-            toneFreq: toneFreqSlider.value,
-            volume: volumeSlider.value,
-            audioDeviceId: audioDevicesSelect.value,
-            macros: shorthandMacros
-        };
-        try {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
-        } catch (e) {}
-    }
-
-    function loadAllParams() {
-        try {
-            const stored = localStorage.getItem(STORAGE_KEY);
-            if (!stored) return;
-            const cfg = JSON.parse(stored);
-
-            if (cfg.wpm) { wpmSlider.value = cfg.wpm; wpmVal.textContent = cfg.wpm; }
-            if (cfg.mode) document.querySelector(`input[name="keyerMode"][value="${cfg.mode}"]`).checked = true;
-            if (cfg.modeA !== undefined) chkModeA.checked = cfg.modeA;
-            if (cfg.swap !== undefined) chkSwap.checked = cfg.swap;
-            if (cfg.toneFreq) { toneFreqSlider.value = cfg.toneFreq; toneFreqVal.textContent = cfg.toneFreq; }
-            if (cfg.volume) { volumeSlider.value = cfg.volume; volumeVal.textContent = `${cfg.volume}%`; }
-            if (cfg.macros) shorthandMacros = Object.assign(shorthandMacros, cfg.macros);
-
-            log("Settings loaded from local storage.");
-        } catch (e) {}
-    }
-
-    // Toggle Collapsible Settings Panel
-    settingsTitleClick.addEventListener('click', () => {
-        const isOpen = settingsContent.classList.toggle('open');
-        settingsArrow.textContent = isOpen ? '▲' : '▼';
-    });
-
-    // Help Modal Controls
-    btnHelpInline.addEventListener('click', (e) => { e.preventDefault(); helpModal.style.display = 'flex'; });
-    closeHelpModal.addEventListener('click', () => { helpModal.style.display = 'none'; });
-
-    // Shorthand Macro Modal Controls
-    function openMacroConfigModal() {
-        cfgF1.value = shorthandMacros.F1 || '';
-        cfgF2.value = shorthandMacros.F2 || '';
-        cfgF3.value = shorthandMacros.F3 || '';
-        cfgF4.value = shorthandMacros.F4 || '';
-        macroModal.style.display = 'flex';
-    }
-
-    btnSaveMacros.addEventListener('click', () => {
-        shorthandMacros.F1 = cfgF1.value;
-        shorthandMacros.F2 = cfgF2.value;
-        shorthandMacros.F3 = cfgF3.value;
-        shorthandMacros.F4 = cfgF4.value;
-        saveAllParams();
-        macroModal.style.display = 'none';
-        log("Shorthand definitions saved.");
-    });
-
-    btnCancelMacros.addEventListener('click', () => {
-        macroModal.style.display = 'none';
-    });
-
-    // Shorthand Execution Logic
-    function executeShorthand(keyName) {
-        if (keyName === 'F5') {
-            txInput.value = ''; // Cancel/Clear unsent text
-            log("F5 pressed: Unsent text cleared.");
-            return;
-        }
-
-        if (shorthandMacros[keyName]) {
-            const currentVal = txInput.value;
-            const prefixSpace = (currentVal.length > 0 && !currentVal.endsWith(' ')) ? ' ' : '';
-            txInput.value = currentVal + prefixSpace + shorthandMacros[keyName];
-            log(`Triggered ${keyName} shorthand.`);
-        }
-    }
-
-    // Bind Shorthand Buttons (Click & Long Press)
-    ['F1', 'F2', 'F3', 'F4', 'F5'].forEach(key => {
-        const btn = document.getElementById(`btn${key}`);
-        let pressTimer = null;
-        let isLongPress = false;
-
-        function startPress() {
-            isLongPress = false;
-            pressTimer = setTimeout(() => {
-                isLongPress = true;
-                openMacroConfigModal();
-            }, 600); // 600ms hold triggers Config Modal
-        }
-
-        function endPress(e) {
-            if (e) e.preventDefault();
-            clearTimeout(pressTimer);
-            if (!isLongPress) {
-                executeShorthand(key);
-            }
-        }
-
-        btn.addEventListener('touchstart', (e) => { e.preventDefault(); startPress(); }, { passive: false });
-        btn.addEventListener('touchend', (e) => { endPress(e); }, { passive: false });
-        btn.addEventListener('mousedown', () => startPress());
-        btn.addEventListener('mouseup', (e) => endPress(e));
-        btn.addEventListener('mouseleave', () => clearTimeout(pressTimer));
-    });
-
-    // Auto-blur controls so keyboard shortcuts always work
-    document.addEventListener('mouseup', (e) => {
-        if (['INPUT', 'SELECT', 'BUTTON'].includes(e.target.tagName)) {
-            if (e.target.id === 'txInput' || e.target.closest('#macroModal')) return;
-            setTimeout(() => e.target.blur(), 50);
-        }
-    });
-
-    // Slider Listeners with Auto-Save
-    wpmSlider.addEventListener('input', () => { wpmVal.textContent = wpmSlider.value; saveAllParams(); });
-    toneFreqSlider.addEventListener('input', () => {
-        toneFreqVal.textContent = toneFreqSlider.value;
-        if (oscNode && audioCtx) {
-            oscNode.frequency.setValueAtTime(parseFloat(toneFreqSlider.value), audioCtx.currentTime);
-        }
-        saveAllParams();
-    });
-    volumeSlider.addEventListener('input', () => {
-        const val = volumeSlider.value;
-        volumeVal.textContent = `${val}%`;
-        if (masterGainNode && audioCtx) {
-            masterGainNode.gain.setValueAtTime(parseFloat(val) / 100, audioCtx.currentTime);
-        }
-        saveAllParams();
-    });
-
-    // Audio Engine
-    function initAudio() {
+    // Direct Audio Context Initialization & Resumption
+    function ensureAudioReady() {
         if (!audioCtx) {
             audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             oscNode = audioCtx.createOscillator();
@@ -839,55 +675,22 @@
 
             oscNode.type = 'sine';
             oscNode.frequency.setValueAtTime(parseFloat(toneFreqSlider.value), audioCtx.currentTime);
-            envelopeGainNode.gain.setValueAtTime(0, audioCtx.currentTime);
-            
+            envelopeGainNode.gain.setValueAtTime(0.0001, audioCtx.currentTime);
             masterGainNode.gain.setValueAtTime(parseFloat(volumeSlider.value) / 100, audioCtx.currentTime);
 
             oscNode.connect(envelopeGainNode);
             envelopeGainNode.connect(masterGainNode);
             masterGainNode.connect(audioCtx.destination);
             oscNode.start();
-            log("Audio Engine ready.");
+            log("Audio Engine initialized.");
         }
-        if (audioCtx.state === 'suspended') audioCtx.resume();
-    }
-
-    async function updateAudioDevices() {
-        initAudio();
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            stream.getTracks().forEach(track => track.stop());
-
-            const devices = await navigator.mediaDevices.enumerateDevices();
-            const audioOutputs = devices.filter(d => d.kind === 'audiooutput');
-
-            audioDevicesSelect.innerHTML = '';
-            audioOutputs.forEach((device, i) => {
-                const opt = document.createElement('option');
-                opt.value = device.deviceId;
-                opt.textContent = device.label || `Device ${i + 1}`;
-                audioDevicesSelect.appendChild(opt);
-            });
-            log(`Found ${audioOutputs.length} audio devices.`);
-        } catch (err) {
-            log(`Scan error: ${err.message}`);
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
         }
     }
-
-    btnScanAudio.addEventListener('click', updateAudioDevices);
-    audioDevicesSelect.addEventListener('change', async () => {
-        initAudio();
-        if (typeof audioCtx.setSinkId === 'function') {
-            try {
-                await audioCtx.setSinkId(audioDevicesSelect.value);
-                log(`Audio routed.`);
-                saveAllParams();
-            } catch (err) { log(`Audio Route Error: ${err.message}`); }
-        }
-    });
 
     function startSound(type = null) {
-        initAudio();
+        ensureAudioReady();
 
         if (type === 'dit') {
             touchStraight.classList.add('dit-active');
@@ -916,11 +719,223 @@
         const now = audioCtx.currentTime;
         const rampTime = RISE_FALL_MS / 1000;
         envelopeGainNode.gain.cancelScheduledValues(now);
-        envelopeGainNode.gain.setTargetAtTime(0.00001, now, rampTime / 3);
+        envelopeGainNode.gain.setTargetAtTime(0.0001, now, rampTime / 3);
     }
 
-    // Keyer Machine
-    function getMode() { return document.querySelector('input[name="keyerMode"]:checked').value; }
+    // Local Storage Setup
+    function saveAllParams() {
+        const config = {
+            wpm: wpmSlider.value,
+            mode: getMode(),
+            modeA: chkModeA.checked,
+            swap: chkSwap.checked,
+            toneFreq: toneFreqSlider.value,
+            volume: volumeSlider.value,
+            audioDeviceId: audioDevicesSelect.value,
+            macros: shorthandMacros
+        };
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
+        } catch (e) {}
+    }
+
+    function loadAllParams() {
+        try {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            if (!stored) return;
+            const cfg = JSON.parse(stored);
+
+            if (cfg.wpm) { wpmSlider.value = cfg.wpm; wpmVal.textContent = cfg.wpm; }
+            if (cfg.mode) {
+                const el = document.querySelector(`input[name="keyerMode"][value="${cfg.mode}"]`);
+                if (el) el.checked = true;
+            }
+            if (cfg.modeA !== undefined) chkModeA.checked = cfg.modeA;
+            if (cfg.swap !== undefined) chkSwap.checked = cfg.swap;
+            if (cfg.toneFreq) { toneFreqSlider.value = cfg.toneFreq; toneFreqVal.textContent = cfg.toneFreq; }
+            if (cfg.volume) { volumeSlider.value = cfg.volume; volumeVal.textContent = `${cfg.volume}%`; }
+            if (cfg.macros) shorthandMacros = Object.assign(shorthandMacros, cfg.macros);
+
+            log("Settings loaded from local storage.");
+        } catch (e) {}
+    }
+
+    // UI Panel Interactions
+    settingsTitleClick.addEventListener('click', () => {
+        const isOpen = settingsContent.classList.toggle('open');
+        settingsArrow.textContent = isOpen ? '▲' : '▼';
+    });
+
+    btnHelpInline.addEventListener('click', (e) => { e.preventDefault(); helpModal.style.display = 'flex'; });
+    closeHelpModal.addEventListener('click', () => { helpModal.style.display = 'none'; });
+
+    function openMacroConfigModal() {
+        cfgF1.value = shorthandMacros.F1 || '';
+        cfgF2.value = shorthandMacros.F2 || '';
+        cfgF3.value = shorthandMacros.F3 || '';
+        cfgF4.value = shorthandMacros.F4 || '';
+        cfgF5.value = shorthandMacros.F5 || '';
+        macroModal.style.display = 'flex';
+    }
+
+    btnSaveMacros.addEventListener('click', () => {
+        shorthandMacros.F1 = cfgF1.value;
+        shorthandMacros.F2 = cfgF2.value;
+        shorthandMacros.F3 = cfgF3.value;
+        shorthandMacros.F4 = cfgF4.value;
+        shorthandMacros.F5 = cfgF5.value;
+        saveAllParams();
+        macroModal.style.display = 'none';
+        log("Shorthands updated.");
+    });
+
+    btnCancelMacros.addEventListener('click', () => { macroModal.style.display = 'none'; });
+
+    function executeShorthand(keyName) {
+        if (shorthandMacros[keyName]) {
+            const currentVal = txInput.value;
+            const prefixSpace = (currentVal.length > 0 && !currentVal.endsWith(' ')) ? ' ' : '';
+            const textToAdd = prefixSpace + shorthandMacros[keyName];
+            
+            txInput.value = currentVal + textToAdd;
+
+            // Maintain up to 3 levels in the Undo history stack
+            insertedHistory.push(textToAdd);
+            if (insertedHistory.length > 3) {
+                insertedHistory.shift(); // Remove oldest
+            }
+
+            log(`Triggered ${keyName} shorthand.`);
+        }
+    }
+
+    // Bind Shorthands (F1 - F5)
+    ['F1', 'F2', 'F3', 'F4', 'F5'].forEach(key => {
+        const btn = document.getElementById(`btn${key}`);
+        let pressTimer = null;
+        let isLongPress = false;
+
+        btn.addEventListener('mousedown', () => {
+            isLongPress = false;
+            pressTimer = setTimeout(() => {
+                isLongPress = true;
+                openMacroConfigModal();
+            }, 600);
+        });
+
+        btn.addEventListener('mouseup', (e) => {
+            e.preventDefault();
+            clearTimeout(pressTimer);
+            if (!isLongPress) executeShorthand(key);
+        });
+
+        btn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            isLongPress = false;
+            pressTimer = setTimeout(() => {
+                isLongPress = true;
+                openMacroConfigModal();
+            }, 600);
+        }, { passive: false });
+
+        btn.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            clearTimeout(pressTimer);
+            if (!isLongPress) executeShorthand(key);
+        }, { passive: false });
+    });
+
+    // 3-Level Undo / Hold-to-Clear Logic
+    let undoClearTimer = null;
+    let isUndoClearLongPress = false;
+
+    btnUndoClear.addEventListener('mousedown', () => {
+        isUndoClearLongPress = false;
+        undoClearTimer = setTimeout(() => {
+            isUndoClearLongPress = true;
+            txInput.value = '';
+            insertedHistory = []; // Reset history stack
+            log("Cleared unsent text.");
+        }, 600);
+    });
+
+    btnUndoClear.addEventListener('mouseup', (e) => {
+        e.preventDefault();
+        clearTimeout(undoClearTimer);
+        if (!isUndoClearLongPress) {
+            if (insertedHistory.length > 0) {
+                const lastText = insertedHistory.pop();
+                if (txInput.value.endsWith(lastText)) {
+                    txInput.value = txInput.value.slice(0, -lastText.length);
+                    log(`Undid shorthand (Remaining levels: ${insertedHistory.length}).`);
+                } else {
+                    log("Text modified manually; cannot undo.");
+                    insertedHistory = []; // Reset if text no longer matches
+                }
+            } else {
+                log("Nothing to undo.");
+            }
+        }
+    });
+
+    // Sliders
+    wpmSlider.addEventListener('input', () => { wpmVal.textContent = wpmSlider.value; saveAllParams(); });
+    toneFreqSlider.addEventListener('input', () => {
+        toneFreqVal.textContent = toneFreqSlider.value;
+        if (oscNode && audioCtx) {
+            oscNode.frequency.setValueAtTime(parseFloat(toneFreqSlider.value), audioCtx.currentTime);
+        }
+        saveAllParams();
+    });
+    volumeSlider.addEventListener('input', () => {
+        const val = volumeSlider.value;
+        volumeVal.textContent = `${val}%`;
+        if (masterGainNode && audioCtx) {
+            masterGainNode.gain.setValueAtTime(parseFloat(val) / 100, audioCtx.currentTime);
+        }
+        saveAllParams();
+    });
+
+    async function updateAudioDevices() {
+        ensureAudioReady();
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            stream.getTracks().forEach(track => track.stop());
+
+            const devices = await navigator.mediaDevices.enumerateDevices();
+            const audioOutputs = devices.filter(d => d.kind === 'audiooutput');
+
+            audioDevicesSelect.innerHTML = '';
+            audioOutputs.forEach((device, i) => {
+                const opt = document.createElement('option');
+                opt.value = device.deviceId;
+                opt.textContent = device.label || `Device ${i + 1}`;
+                audioDevicesSelect.appendChild(opt);
+            });
+            log(`Found ${audioOutputs.length} audio devices.`);
+        } catch (err) {
+            log(`Scan error: ${err.message}`);
+        }
+    }
+
+    btnScanAudio.addEventListener('click', updateAudioDevices);
+    audioDevicesSelect.addEventListener('change', async () => {
+        ensureAudioReady();
+        if (typeof audioCtx.setSinkId === 'function') {
+            try {
+                await audioCtx.setSinkId(audioDevicesSelect.value);
+                log(`Audio routed.`);
+                saveAllParams();
+            } catch (err) { log(`Audio Route Error: ${err.message}`); }
+        }
+    });
+
+    // Keyer
+    function getMode() { 
+        const checked = document.querySelector('input[name="keyerMode"]:checked');
+        return checked ? checked.value : 'iambic'; 
+    }
+    
     function getTiming() {
         const wpm = parseInt(wpmSlider.value, 10) || 17;
         const ditMs = 1200 / wpm;
@@ -1004,9 +1019,9 @@
         }, duration);
     }
 
-    // TX Engine
+    // TX
     function toggleTX() {
-        initAudio();
+        ensureAudioReady();
         isTXActive = !isTXActive;
         if (isTXActive) {
             btnTX.classList.add('active');
@@ -1029,8 +1044,6 @@
     function processTXQueue() {
         if (!isTXActive) return;
         const text = txInput.value;
-        
-        // Manual TX mode: If input is empty, remain active and wait for new text/shorthand
         if (!text || text.length === 0) { 
             txTimer = setTimeout(processTXQueue, 200);
             return; 
@@ -1076,14 +1089,13 @@
     }
 
     btnTX.addEventListener('click', toggleTX);
-    btnClearSent.addEventListener('click', () => { sentDisplay.textContent = ''; });
 
-    // Mouse, Touch & Key Input Event Listeners
+    // Controls
     let mouseDit = false, mouseDah = false, keyDit = false, keyDah = false;
     function updateInputs() { setPhysicalState(mouseDit || keyDit || touchDit, mouseDah || keyDah || touchDah); }
 
     titleKeyArea.addEventListener('mousedown', (e) => {
-        initAudio();
+        ensureAudioReady();
         e.preventDefault();
         if (e.button === 0) mouseDit = true;
         if (e.button === 2) mouseDah = true;
@@ -1099,12 +1111,12 @@
 
     function bindTouchEvents(elem, startFn, endFn) {
         elem.addEventListener('touchstart', (e) => {
-            e.preventDefault(); initAudio(); elem.classList.add('active'); startFn();
+            e.preventDefault(); ensureAudioReady(); elem.classList.add('active'); startFn();
         }, { passive: false });
         elem.addEventListener('touchend', (e) => {
             e.preventDefault(); elem.classList.remove('active'); endFn();
         }, { passive: false });
-        elem.addEventListener('mousedown', () => { initAudio(); elem.classList.add('active'); startFn(); });
+        elem.addEventListener('mousedown', () => { ensureAudioReady(); elem.classList.add('active'); startFn(); });
         elem.addEventListener('mouseup', () => { elem.classList.remove('active'); endFn(); });
         elem.addEventListener('mouseleave', () => { elem.classList.remove('active'); endFn(); });
     }
@@ -1113,11 +1125,10 @@
     bindTouchEvents(touchStraight, () => { isDirectTonePressed = true; startSound('dit'); }, () => { isDirectTonePressed = false; stopSound(); });
     bindTouchEvents(touchRight, () => { touchDah = true; updateInputs(); }, () => { touchDah = false; updateInputs(); });
 
-    // Keyboard Handler (Supports F1-F5 Function Keys)
+    // Keyboard Shortcuts
     window.addEventListener('keydown', (e) => {
         if (e.ctrlKey && e.key === 'Enter') { e.preventDefault(); toggleTX(); return; }
 
-        // Function Key Shorthands (F1 - F5)
         if (['F1', 'F2', 'F3', 'F4', 'F5'].includes(e.key)) {
             e.preventDefault();
             executeShorthand(e.key);
@@ -1125,7 +1136,7 @@
         }
 
         if (e.key === '\\') {
-            if (!isDirectTonePressed) { isDirectTonePressed = true; initAudio(); startSound('dit'); }
+            if (!isDirectTonePressed) { isDirectTonePressed = true; ensureAudioReady(); startSound('dit'); }
             return;
         }
 
@@ -1134,7 +1145,7 @@
             document.activeElement.blur();
         } else if (document.activeElement && document.activeElement.id === 'txInput') return;
 
-        initAudio();
+        ensureAudioReady();
         if (e.key === '[') { e.preventDefault(); keyDit = true; updateInputs(); }
         else if (e.key === ']') { e.preventDefault(); keyDah = true; updateInputs(); }
         else if (e.key === '-' || e.key === '_') {
@@ -1165,7 +1176,7 @@
         });
     });
 
-    // Serial
+    // Web Serial Integration
     async function closeSerialPort() {
         if (pollInterval) { clearInterval(pollInterval); pollInterval = null; }
         if (activePort) { try { await activePort.close(); } catch (err) {} activePort = null; }
@@ -1195,35 +1206,37 @@
 
     async function refreshPortList(targetIndexToOpen = null) {
         if (!("serial" in navigator)) return;
-        authorizedPorts = await navigator.serial.getPorts();
-        portSelect.innerHTML = '';
-        if (authorizedPorts.length === 0) {
-            const opt = document.createElement('option');
-            opt.value = ""; opt.textContent = "-- Click Authorize --";
-            portSelect.appendChild(opt);
-            return;
-        }
-        authorizedPorts.forEach((port, idx) => {
-            const info = port.getInfo();
-            const opt = document.createElement('option');
-            opt.value = idx;
-            opt.textContent = `Port ${idx + 1} (${info.usbVendorId ? '0x'+info.usbVendorId.toString(16) : 'N/A'})`;
-            portSelect.appendChild(opt);
-        });
+        try {
+            authorizedPorts = await navigator.serial.getPorts();
+            portSelect.innerHTML = '';
+            if (authorizedPorts.length === 0) {
+                const opt = document.createElement('option');
+                opt.value = ""; opt.textContent = "-- Click Authorize --";
+                portSelect.appendChild(opt);
+                return;
+            }
+            authorizedPorts.forEach((port, idx) => {
+                const info = port.getInfo();
+                const opt = document.createElement('option');
+                opt.value = idx;
+                opt.textContent = `Port ${idx + 1} (${info.usbVendorId ? '0x'+info.usbVendorId.toString(16) : 'N/A'})`;
+                portSelect.appendChild(opt);
+            });
 
-        if (targetIndexToOpen !== null && authorizedPorts[targetIndexToOpen]) {
-            portSelect.selectedIndex = targetIndexToOpen;
-            await openAndMonitorPort(authorizedPorts[targetIndexToOpen]);
-        }
+            if (targetIndexToOpen !== null && authorizedPorts[targetIndexToOpen]) {
+                portSelect.selectedIndex = targetIndexToOpen;
+                await openAndMonitorPort(authorizedPorts[targetIndexToOpen]);
+            }
+        } catch (err) { log(`Port scan error: ${err.message}`); }
     }
 
     btnAuthorize.addEventListener('click', async () => {
-        if (!("serial" in navigator)) { alert("Web Serial not supported."); return; }
+        if (!("serial" in navigator)) { alert("Web Serial API is not supported in this browser. Use Google Chrome or Microsoft Edge."); return; }
         try {
             await navigator.serial.requestPort();
             const ports = await navigator.serial.getPorts();
             await refreshPortList(ports.length - 1);
-        } catch (err) {}
+        } catch (err) { log(`Authorization cancelled: ${err.message}`); }
     });
 
     btnDisconnect.addEventListener('click', async () => { await closeSerialPort(); portSelect.value = ""; });
@@ -1233,7 +1246,7 @@
         await openAndMonitorPort(authorizedPorts[idx]);
     });
 
-    // Startup Init
+    // Startup Initialization
     loadAllParams();
     refreshPortList();
 </script>
