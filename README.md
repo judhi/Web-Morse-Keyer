@@ -1,57 +1,57 @@
 Demo page [https://judhi.github.io/Web-Morse-Keyer/morse_keyer.html]
 
-# Web Morse Keyer v1.0
+# 📻 Web Morse Keyer v1.0
 
-Welcome to **Web Morse Keyer v1.0**! This is a browser-based Morse code keyer that operates natively inside modern web browsers using pure HTML5, JavaScript, the **Web Audio API**, and the **Web Serial API**.
-
----
-
-## 🎮 Input Sources
-
-You can use any of these input options to key the application:
-
-| Function | Keyboard | Serial I/O Port | Mouse over Title Bar |
-| :--- | :---: | :---: | :---: |
-| **Left paddle (Dit)** | `[` | CTS | Left button |
-| **Right paddle (Dah)** | `]` | DSR | Right button |
+A lightweight, feature-rich browser-based Morse Code keyer and transmitter designed for amateur radio operators, CW practice, and field/QRP operations. Supports physical paddles via Web Serial, touch pads, keyboard keying, and multi-mode keyer logic.
 
 ---
 
-## ⌨️ Other Keyboard Shortcuts
+## ✨ Features
 
-| Key | Function |
-| :---: | :--- |
-| `\` | Straight key (Press & hold for continuous tone) |
-| `-` | Decrease keyer speed (WPM) |
-| `=` | Increase keyer speed (WPM) |
-| `CTRL` + `ENTER` | Toggle TX (Text Transmission mode) |
-
----
-
-## 🛠️ Features
-
-- **Four Keying Modes:**
-  - **Straight Key:** Manual keying input.
-  - **Semi-Auto (Bug):** Generates automatic PARIS-timed dits while dahs remain manual.
-  - **Iambic Paddles:** Supports both **Mode A** and **Mode B** (with a visual indicator for Mode B trailing element memory).
-  - **Ultimatic Paddles:** Squeeze keying mode playing the most recently pressed lever.
-- **Web Serial API Support:** Connect an external straight key, single-lever, or iambic paddle directly via serial hardware control lines (**CTS** and **DSR**).
-- **Text Transmitter (TX):** Type or paste text into the TX input box to send automated Morse code at the configured WPM speed. Characters are automatically moved to the *Sent Text Output* display as they are sent.
-- **Audio Output Routing:** Includes a master volume slider, envelope rise/fall shaping ($8\text{ ms}$ default to prevent audio clicks), and dynamic device selection via `setSinkId` to route audio to specific speakers, headphones, or Virtual Audio Cables (VAC).
-- **Configuration Persistence:** Save and load configuration preferences via `serstat.cfg`.
+- **Multiple Keyer Modes:**
+  - **Iambic Paddles** (Mode A & Mode B with trailing memory)
+  - **Semi-Automatic (Bug)**
+  - **Ultimatic Paddles**
+  - **Straight Key**
+- **Flexible Hardware & Control Options:**
+  - **Web Serial Interface:** Connect external physical paddles using serial control lines (**CTS** for Dit, **DSR** for Dah).
+  - **Touch Interface:** Dedicated on-screen touch pads for mobile/tablet CW operation.
+  - **Keyboard Keying:** Full keying support (`[` / `]` for paddles, `\` for straight key).
+  - **Mouse Keying:** Integrated title bar keyer (Left-click = Dit, Right-click = Dah).
+- **Text Transmitter (TX):**
+  - Live text-to-CW transmission with real-time text character queueing.
+  - **Shorthand Macros (F1–F5):** Quick-send macros for standard contest/QSO exchanges (`CQ`, `599`, `73`, etc.).
+  - **3-Level Undo / Hold-to-Clear:** Tap to undo macro insertions (up to 3 levels) or long-press to clear unsent text.
+- **Audio Engine:**
+  - Customizable tone frequency (500 Hz – 1200 Hz) with adjustable rise/fall envelope time.
+  - Multi-device audio routing (select custom soundcards or external audio interfaces).
+- **Persistent Settings:** Automatically saves WPM, tone, volume, macros, and keyer modes to browser local storage.
 
 ---
 
-## ⚡ Quick Start
+## 🕹️ Input Controls & Shortcuts
 
-1. Open the keyer in **Google Chrome**, **Microsoft Edge**, or **Opera** *(Firefox and Safari do not support the Web Serial API)*.
-2. Click **Authorize Port** under the *Serial I/O* section if you are connecting physical paddles via a USB-to-Serial adapter.
-3. Use the **Mouse Keying Area**, your keyboard (`[` and `]`), or serial hardware inputs to start keying!
+### Keying Interfaces
+
+| Function | Keyboard | Serial Port Line | Touch / Mouse |
+| :--- | :--- | :--- | :--- |
+| **Left Paddle (Dit)** | `[` | `CTS` | Title Bar Left-Click / Touch **"L"** |
+| **Right Paddle (Dah)** | `]` | `DSR` | Title Bar Right-Click / Touch **"R"** |
+| **Straight Key** | `\` | — | Middle Touch Pad **"S"** |
+
+### Shortcuts & Shorthands
+
+| Action | Control / Shortcut | Description |
+| :--- | :--- | :--- |
+| **Trigger Shorthand** | `F1` – `F5` | Inserts saved macro text into the TX queue. |
+| **Configure Macros** | Long-Press `F1`–`F5` | Opens the configuration modal to edit shorthand texts. |
+| **Undo Insertion** | Tap `Undo/Clear` | Undoes the last inserted F-key macro (up to 3 history levels). |
+| **Clear Unsent Text** | Hold `Undo/Clear` | Clears all text from the unsent TX text box. |
+| **Adjust Speed (WPM)** | `-` / `=` (or `_` / `+`) | Decreases or increases keying speed in WPM increments. |
+| **Toggle TX** | `Ctrl + Enter` | Starts or stops automatic text transmission. |
 
 ---
 
-## 🙏 Credits & Acknowledgments
+## 🔌 Serial Port Hardware Hookup
 
-This web application is inspired by the original **Morse Keyer** Windows app developed by **Robert B. Denny** ([rdenny@dc3.com](mailto:rdenny@dc3.com)).
-
-**Created by:** *Judhi A65IV* ([judhi.a65iv@gmail.com](mailto:judhi.a65iv@gmail.com))
+To connect physical Morse paddles using an external USB-to-Serial adapter (e.g., FTDI, CH340, CP2102):
