@@ -845,11 +845,14 @@
         }, { passive: false });
     });
 
-    // 3-Level Undo / Hold-to-Clear Logic
+	// 3-Level Undo / Hold-to-Clear Logic
     let undoClearTimer = null;
     let isUndoClearLongPress = false;
 
-    btnUndoClear.addEventListener('mousedown', () => {
+    function handleUndoClearStart(e) {
+        // Prevent context menus, text selection, and emulated mouse events
+        if (e.cancelable) e.preventDefault(); 
+        
         isUndoClearLongPress = false;
         undoClearTimer = setTimeout(() => {
             isUndoClearLongPress = true;
@@ -857,10 +860,11 @@
             insertedHistory = []; // Reset history stack
             log("Cleared unsent text.");
         }, 600);
-    });
+    }
 
-    btnUndoClear.addEventListener('mouseup', (e) => {
-        e.preventDefault();
+    function handleUndoClearEnd(e) {
+        if (e.cancelable) e.preventDefault();
+        
         clearTimeout(undoClearTimer);
         if (!isUndoClearLongPress) {
             if (insertedHistory.length > 0) {
@@ -876,7 +880,21 @@
                 log("Nothing to undo.");
             }
         }
-    });
+    }
+
+    function handleUndoClearCancel() {
+        clearTimeout(undoClearTimer);
+    }
+
+    // Mouse Listeners
+    btnUndoClear.addEventListener('mousedown', handleUndoClearStart);
+    btnUndoClear.addEventListener('mouseup', handleUndoClearEnd);
+    btnUndoClear.addEventListener('mouseleave', handleUndoClearCancel);
+
+    // Touch Listeners (Mobile Support)
+    btnUndoClear.addEventListener('touchstart', handleUndoClearStart, { passive: false });
+    btnUndoClear.addEventListener('touchend', handleUndoClearEnd, { passive: false });
+    btnUndoClear.addEventListener('touchcancel', handleUndoClearCancel, { passive: false });
 
     // Sliders
     wpmSlider.addEventListener('input', () => { wpmVal.textContent = wpmSlider.value; saveAllParams(); });
