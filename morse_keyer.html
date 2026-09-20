@@ -18,16 +18,19 @@
             color: var(--text-color);
             margin: 20px;
             user-select: none;
+            -webkit-user-select: none;
         }
 
         .window {
             width: 660px;
+            max-width: 100%;
             background-color: var(--panel-bg);
             border: 2px solid var(--border-color);
             box-shadow: 2px 2px 8px rgba(0,0,0,0.2);
             padding: 15px;
             box-sizing: border-box;
             position: relative;
+            margin: 0 auto;
         }
 
         .title-bar {
@@ -43,6 +46,16 @@
             display: grid;
             grid-template-columns: 370px 1fr;
             gap: 15px;
+        }
+
+        @media (max-width: 650px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+            .window {
+                width: 100%;
+                margin: 0;
+            }
         }
 
         fieldset {
@@ -226,6 +239,52 @@
             border: 1px solid #666;
         }
 
+        /* --- Touch Keying Pad Bar --- */
+        .touch-pad-container {
+            display: flex;
+            width: 100%;
+            height: 60px;
+            margin-top: 10px;
+            border: 1px solid #333;
+            box-sizing: border-box;
+            touch-action: manipulation;
+        }
+
+        .touch-pad {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.4rem;
+            color: #ffffff;
+            cursor: pointer;
+            user-select: none;
+            -webkit-user-select: none;
+            border-right: 1px solid #333;
+        }
+
+        .touch-pad:last-child {
+            border-right: none;
+        }
+
+        .touch-pad-left {
+            background-color: #888888;
+        }
+
+        .touch-pad-middle {
+            background-color: #555555;
+        }
+
+        .touch-pad-right {
+            background-color: #888888;
+        }
+
+        .touch-pad:active, .touch-pad.active {
+            filter: brightness(1.3);
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.6);
+        }
+
         /* --- Help Modal Dialog Styling --- */
         .modal-overlay {
             display: none;
@@ -244,6 +303,7 @@
             background: #fff;
             color: #000;
             width: 580px;
+            max-width: 90%;
             padding: 25px;
             border-radius: 4px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.3);
@@ -417,6 +477,13 @@
 
     <!-- Console Log -->
     <div id="log"></div>
+
+    <!-- Mobile Touch / Screen Input Bar -->
+    <div class="touch-pad-container">
+        <div id="touchLeft" class="touch-pad touch-pad-left">L</div>
+        <div id="touchStraight" class="touch-pad touch-pad-middle">S</div>
+        <div id="touchRight" class="touch-pad touch-pad-right">R</div>
+    </div>
 </div>
 
 <!-- Custom Help Screen Modal -->
@@ -512,6 +579,10 @@
     let isTXActive = false;
     let txTimer = null;
 
+    // Touch Pads State
+    let touchDit = false;
+    let touchDah = false;
+
     // UI Elements
     const wpmInput = document.getElementById('wpmInput');
     const toneFreqInput = document.getElementById('toneFreq');
@@ -537,6 +608,11 @@
     const helpLink = document.getElementById('helpLink');
     const helpModal = document.getElementById('helpModal');
     const closeHelpModal = document.getElementById('closeHelpModal');
+
+    // Touch Pad UI Elements
+    const touchLeft = document.getElementById('touchLeft');
+    const touchStraight = document.getElementById('touchStraight');
+    const touchRight = document.getElementById('touchRight');
 
     // Morse Code Table
     const MORSE_TABLE = {
@@ -677,7 +753,6 @@
     function startSound(type = null) {
         initAudio();
 
-        // Dynamic Background Color update based on element type
         if (type === 'dit') {
             mouseKeyArea.classList.add('dit-active');
             mouseKeyArea.classList.remove('dah-active');
@@ -697,7 +772,6 @@
     }
 
     function stopSound() {
-        // Reset Mouse Keying Area Background Color
         mouseKeyArea.classList.remove('dit-active');
         mouseKeyArea.classList.remove('dah-active');
 
@@ -917,14 +991,14 @@
         sentDisplay.textContent = '';
     });
 
-    // --- Mouse & Keyboard Input Handler ---
+    // --- Mouse, Touch & Keyboard Input Handler ---
     let mouseDit = false;
     let mouseDah = false;
     let keyDit = false;
     let keyDah = false;
 
     function updateInputs() {
-        setPhysicalState(mouseDit || keyDit, mouseDah || keyDah);
+        setPhysicalState(mouseDit || keyDit || touchDit, mouseDah || keyDah || touchDah);
     }
 
     mouseKeyArea.addEventListener('mousedown', (e) => {
@@ -944,6 +1018,65 @@
     });
 
     mouseKeyArea.addEventListener('contextmenu', e => e.preventDefault());
+
+    // --- Mobile Touch Pad Events (L / S / R) ---
+    function bindTouchEvents(element, startFn, endFn) {
+        element.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            initAudio();
+            element.classList.add('active');
+            startFn();
+        }, { passive: false });
+
+        element.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            element.classList.remove('active');
+            endFn();
+        }, { passive: false });
+
+        element.addEventListener('mousedown', (e) => {
+            initAudio();
+            element.classList.add('active');
+            startFn();
+        });
+
+        element.addEventListener('mouseup', (e) => {
+            element.classList.remove('active');
+            endFn();
+        });
+
+        element.addEventListener('mouseleave', (e) => {
+            element.classList.remove('active');
+            endFn();
+        });
+    }
+
+    // Touch Left = Dit Paddle
+    bindTouchEvents(touchLeft, () => {
+        touchDit = true;
+        updateInputs();
+    }, () => {
+        touchDit = false;
+        updateInputs();
+    });
+
+    // Touch Middle = Straight Key (\)
+    bindTouchEvents(touchStraight, () => {
+        isDirectTonePressed = true;
+        startSound('dit');
+    }, () => {
+        isDirectTonePressed = false;
+        stopSound();
+    });
+
+    // Touch Right = Dah Paddle
+    bindTouchEvents(touchRight, () => {
+        touchDah = true;
+        updateInputs();
+    }, () => {
+        touchDah = false;
+        updateInputs();
+    });
 
     // Keyboard Shortcuts Handler
     window.addEventListener('keydown', (e) => {
@@ -1057,7 +1190,7 @@
                     const serialDit = signals.clearToSend;  // CTS
                     const serialDah = signals.dataSetReady; // DSR
 
-                    setPhysicalState(serialDit || mouseDit || keyDit, serialDah || mouseDah || keyDah);
+                    setPhysicalState(serialDit || mouseDit || keyDit || touchDit, serialDah || mouseDah || keyDah || touchDah);
                 } catch (err) {
                     log(`Signal error: ${err.message}`);
                 }
