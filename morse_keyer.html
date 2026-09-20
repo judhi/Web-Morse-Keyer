@@ -2,114 +2,71 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Web Morse Keyer v1.0</title>
     <style>
         :root {
-            --bg-color: #f0f0f0;
-            --panel-bg: #ececec;
-            --border-color: #aca399;
-            --text-color: #000;
+            --bg-color: #f4f4f6;
+            --panel-bg: #ffffff;
+            --border-color: #b0b0b8;
+            --text-color: #111111;
+            --accent-blue: #004080;
+            --font-main: "Segoe UI", system-ui, -apple-system, sans-serif;
         }
 
         body {
-            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            font-family: var(--font-main);
             background-color: var(--bg-color);
             color: var(--text-color);
-            margin: 20px;
+            margin: 0;
+            padding: 10px;
+            box-sizing: border-box;
             user-select: none;
             -webkit-user-select: none;
+            font-size: 18px; /* High legibility font base */
         }
 
         .window {
-            width: 660px;
-            max-width: 100%;
+            width: 100%;
+            max-width: 480px; /* Mobile vertical portrait container */
+            margin: 0 auto;
             background-color: var(--panel-bg);
             border: 2px solid var(--border-color);
-            box-shadow: 2px 2px 8px rgba(0,0,0,0.2);
-            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 12px;
             box-sizing: border-box;
-            position: relative;
-            margin: 0 auto;
         }
 
         .title-bar {
             font-weight: bold;
-            font-size: 1.1rem;
-            margin-bottom: 15px;
+            font-size: 1.4rem;
+            margin-bottom: 10px;
             display: flex;
             align-items: center;
             gap: 8px;
+            color: var(--accent-blue);
         }
 
-        .main-grid {
-            display: grid;
-            grid-template-columns: 370px 1fr;
-            gap: 15px;
-        }
-
-        @media (max-width: 650px) {
-            .main-grid {
-                grid-template-columns: 1fr;
-            }
-            .window {
-                width: 100%;
-                margin: 0;
-            }
-        }
-
-        fieldset {
-            border: 1px solid #b8b8b8;
-            border-radius: 3px;
-            padding: 10px 12px;
-            margin-bottom: 12px;
-            background: #f9f9f9;
-        }
-
-        legend {
-            font-size: 0.9rem;
-            color: #003399;
-            padding: 0 4px;
-        }
-
-        .field-row {
-            display: flex;
-            align-items: center;
-            margin: 6px 0;
-            font-size: 0.88rem;
-        }
-
-        .field-row label {
-            cursor: pointer;
-        }
-
-        input[type="number"] {
-            width: 50px;
-            padding: 2px 4px;
-            margin-left: 6px;
-        }
-
-        input[type="checkbox"], input[type="radio"] {
-            margin-right: 6px;
-            cursor: pointer;
-        }
-
+        /* 1. Mouse Keying Area at the top */
         .keying-area {
             background-color: #0000ff;
             color: #ffff00;
             font-weight: bold;
-            font-size: 1.1rem;
-            height: 120px;
+            font-size: 1.3rem;
+            height: 110px;
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
             border: 2px inset #fff;
+            border-radius: 6px;
             cursor: pointer;
             box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
             padding: 10px;
             box-sizing: border-box;
             transition: background-color 0.05s ease;
+            margin-bottom: 12px;
         }
 
         .keying-area.dit-active {
@@ -120,10 +77,132 @@
             background-color: #004d1a !important; /* Dark Green */
         }
 
+        fieldset {
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 12px;
+            background: #fafafa;
+        }
+
+        legend {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--accent-blue);
+            padding: 0 6px;
+        }
+
+        .field-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 10px 0;
+            font-size: 1.05rem;
+        }
+
+        .field-row label {
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        input[type="range"] {
+            flex-grow: 1;
+            margin: 0 10px;
+            height: 24px;
+            cursor: pointer;
+        }
+
+        input[type="checkbox"], input[type="radio"] {
+            transform: scale(1.4);
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        /* 2. Text Transmitter (Always Visible) */
+        .sent-text-display {
+            background-color: #111;
+            color: #00ff00;
+            font-family: monospace;
+            padding: 8px;
+            height: 60px;
+            width: 100%;
+            box-sizing: border-box;
+            overflow-y: auto;
+            border: 1px inset #555;
+            border-radius: 4px;
+            font-size: 1.1rem;
+            white-space: pre-wrap;
+            word-break: break-all;
+            margin-bottom: 8px;
+        }
+
+        .tx-textarea {
+            width: 100%;
+            height: 60px;
+            box-sizing: border-box;
+            resize: none;
+            font-family: monospace;
+            font-size: 1.05rem;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #777;
+        }
+
+        .btn {
+            padding: 8px 14px;
+            font-size: 1rem;
+            font-weight: bold;
+            background: #e1e1e1;
+            border: 1px solid #7a7a7a;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .btn:active { background: #cce4f7; }
+        .btn:disabled { background: #f0f0f0; color: #a0a0a0; border-color: #d9d9d9; }
+
+        .btn-tx {
+            background: #e1e1e1;
+            color: #000;
+            padding: 10px;
+            width: 100%;
+        }
+
+        .btn-tx.active {
+            background: #cc0000 !important;
+            color: #ffffff !important;
+            border-color: #880000 !important;
+            box-shadow: 0 0 10px #ff0000;
+        }
+
+        /* 3. Collapsible Settings Panel */
+        .collapsible-header {
+            background-color: #e0e0e8;
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .collapsible-content {
+            display: none;
+            padding-top: 5px;
+        }
+
+        .collapsible-content.open {
+            display: block;
+        }
+
         .indicator-box {
             display: inline-block;
-            width: 14px;
-            height: 14px;
+            width: 16px;
+            height: 16px;
             background-color: #000;
             border: 1px solid #777;
             margin-left: 6px;
@@ -135,117 +214,26 @@
             box-shadow: 0 0 8px #fff;
         }
 
-        .right-column {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .serial-panel-content {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            font-size: 0.88rem;
-        }
-
-        .btn {
-            padding: 3px 8px;
-            font-size: 0.82rem;
-            background: #e1e1e1;
-            border: 1px solid #7a7a7a;
-            border-radius: 2px;
-            cursor: pointer;
-        }
-
-        .btn:hover { background: #e5f1fb; border-color: #0078d7; }
-        .btn:active { background: #cce4f7; }
-        .btn:disabled { background: #f0f0f0; color: #a0a0a0; border-color: #d9d9d9; cursor: default; }
-
-        .btn-tx {
-            font-weight: bold;
-            background: #e1e1e1;
-            color: #000;
-            padding: 6px 12px;
-            border: 1px solid #666;
-        }
-
-        .btn-tx.active {
-            background: #cc0000 !important;
-            color: #ffffff !important;
-            border-color: #880000 !important;
-            box-shadow: 0 0 8px #ff0000;
-        }
-
         .status-pill {
             display: inline-block;
-            width: 10px;
-            height: 10px;
+            width: 12px;
+            height: 12px;
             border-radius: 50%;
             background: #888;
-            margin-right: 5px;
+            margin-right: 6px;
         }
 
         .status-pill.connected { background: #00e676; box-shadow: 0 0 5px #00e676; }
 
-        .sent-text-display {
-            background-color: #111;
-            color: #00ff00;
-            font-family: monospace;
-            padding: 4px;
-            height: 35px;
-            overflow-y: auto;
-            border: 1px inset #555;
-            font-size: 0.85rem;
-            white-space: pre-wrap;
-            word-break: break-all;
-        }
-
-        .tx-textarea {
-            width: 100%;
-            height: 50px;
-            box-sizing: border-box;
-            resize: none;
-            font-family: monospace;
-            font-size: 0.85rem;
-            padding: 4px;
-        }
-
-        .bottom-bar {
-            margin-top: 5px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.85rem;
-        }
-
-        .help-link {
-            color: #0033cc;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            font-weight: bold;
-        }
-
-        #log {
-            font-family: monospace;
-            font-size: 0.75rem;
-            background: #000;
-            color: #00ff00;
-            padding: 6px;
-            height: 50px;
-            overflow-y: auto;
-            margin-top: 8px;
-            border: 1px solid #666;
-        }
-
-        /* --- Touch Keying Pad Bar --- */
+        /* 4. Touch Pads at Bottom */
         .touch-pad-container {
             display: flex;
             width: 100%;
-            height: 60px;
-            margin-top: 10px;
+            height: 75px;
+            margin-top: 12px;
             border: 1px solid #333;
+            border-radius: 6px;
+            overflow: hidden;
             box-sizing: border-box;
             touch-action: manipulation;
         }
@@ -256,7 +244,7 @@
             align-items: center;
             justify-content: center;
             font-weight: bold;
-            font-size: 1.4rem;
+            font-size: 1.8rem;
             color: #ffffff;
             cursor: pointer;
             user-select: none;
@@ -264,36 +252,48 @@
             border-right: 1px solid #333;
         }
 
-        .touch-pad:last-child {
-            border-right: none;
-        }
-
-        .touch-pad-left {
-            background-color: #888888;
-        }
-
-        .touch-pad-middle {
-            background-color: #555555;
-        }
-
-        .touch-pad-right {
-            background-color: #888888;
-        }
+        .touch-pad:last-child { border-right: none; }
+        .touch-pad-left { background-color: #777777; }
+        .touch-pad-middle { background-color: #444444; }
+        .touch-pad-right { background-color: #777777; }
 
         .touch-pad:active, .touch-pad.active {
             filter: brightness(1.3);
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.6);
         }
 
-        /* --- Help Modal Dialog Styling --- */
+        .bottom-bar {
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .help-link {
+            color: var(--accent-blue);
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        #log {
+            font-family: monospace;
+            font-size: 0.85rem;
+            background: #000;
+            color: #00ff00;
+            padding: 8px;
+            height: 60px;
+            overflow-y: auto;
+            margin-top: 10px;
+            border: 1px solid #666;
+            border-radius: 4px;
+        }
+
+        /* Help Modal */
         .modal-overlay {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
             z-index: 1000;
             align-items: center;
             justify-content: center;
@@ -302,41 +302,28 @@
         .modal-card {
             background: #fff;
             color: #000;
-            width: 580px;
-            max-width: 90%;
-            padding: 25px;
-            border-radius: 4px;
+            width: 90%;
+            max-width: 420px;
+            padding: 20px;
+            border-radius: 8px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-            font-size: 0.92rem;
-            line-height: 1.5;
-        }
-
-        .modal-card h2 {
-            margin-top: 0;
-            font-size: 1.25rem;
+            font-size: 0.95rem;
+            line-height: 1.4;
         }
 
         .help-table {
             width: 100%;
             border-collapse: collapse;
-            margin: 12px 0 20px 0;
+            margin: 10px 0;
         }
 
         .help-table th, .help-table td {
             border: 1px solid #000;
-            padding: 4px 8px;
+            padding: 6px;
             text-align: left;
         }
 
-        .help-table th {
-            background-color: #f2f2f2;
-        }
-
-        .close-btn {
-            float: right;
-            margin-top: 15px;
-            padding: 6px 16px;
-        }
+        .help-table th { background-color: #e2e2e2; }
     </style>
 </head>
 <body>
@@ -346,139 +333,122 @@
         <span>☖</span> Web Morse Keyer v1.0
     </div>
 
-    <div class="main-grid">
-        <!-- Left Column -->
-        <div>
-            <!-- Keyer Mode Panel -->
-            <fieldset>
-                <legend>Keyer Mode</legend>
-                <div class="field-row">
-                    <input type="radio" id="modeStraight" name="keyerMode" value="straight">
-                    <label for="modeStraight">Straight key</label>
-                </div>
-                <div class="field-row" style="justify-content: space-between;">
-                    <div>
-                        <input type="radio" id="modeBug" name="keyerMode" value="bug">
-                        <label for="modeBug">Semi-auto (bug)</label>
-                    </div>
-                    <div>
-                        <label for="wpmInput">Speed (wpm)</label>
-                        <input type="number" id="wpmInput" value="17" min="5" max="60">
-                    </div>
-                </div>
-                <div class="field-row" style="justify-content: space-between;">
-                    <div>
-                        <input type="radio" id="modeIambic" name="keyerMode" value="iambic" checked>
-                        <label for="modeIambic">Iambic paddles</label>
-                    </div>
-                    <div>
-                        <input type="checkbox" id="chkModeA" checked>
-                        <label for="chkModeA">Mode A</label>
-                        <div id="modeBIndicator" class="indicator-box" title="Iambic B trailing element memory indicator"></div>
-                    </div>
-                </div>
-                <div class="field-row" style="justify-content: space-between;">
-                    <div>
-                        <input type="radio" id="modeUltimatic" name="keyerMode" value="ultimatic">
-                        <label for="modeUltimatic">Ultimatic paddles</label>
-                    </div>
-                    <div>
-                        <input type="checkbox" id="chkSwap">
-                        <label for="chkSwap">Swap left/right</label>
-                    </div>
-                </div>
-            </fieldset>
-
-            <!-- Sound Output Panel -->
-            <fieldset>
-                <legend>Sound Output</legend>
-                <div class="field-row" style="justify-content: space-between;">
-                    <span>Tone Freq (Hz)</span>
-                    <input type="number" id="toneFreq" value="600" min="200" max="2000" step="10">
-                </div>
-                <div class="field-row" style="justify-content: space-between;">
-                    <label for="riseFall">Tone envelope rise/fall time (ms)</label>
-                    <input type="number" id="riseFall" value="8" min="0" max="50">
-                </div>
-                
-                <!-- Volume Control -->
-                <div class="field-row" style="justify-content: space-between; margin-top: 6px;">
-                    <label for="volumeSlider">Volume:</label>
-                    <input type="range" id="volumeSlider" min="0" max="100" value="80" style="width: 170px;">
-                    <span id="volumeVal" style="width: 35px; text-align: right;">80%</span>
-                </div>
-
-                <div class="field-row" style="flex-direction: column; align-items: flex-start; margin-top:8px;">
-                    <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
-                        <label for="audioDevices">Sound output device</label>
-                        <button id="btnScanAudio" class="btn">Detect Devices</button>
-                    </div>
-                    <select id="audioDevices" style="width: 100%; margin-top: 3px; padding: 2px;">
-                        <option value="default">Default Audio Device</option>
-                    </select>
-                </div>
-            </fieldset>
-        </div>
-
-        <!-- Right Column -->
-        <div class="right-column">
-            <!-- Mouse Keying Area -->
-            <div id="mouseKeyArea" class="keying-area">
-                Mouse keying area
-            </div>
-
-            <!-- Serial I/O Panel -->
-            <fieldset>
-                <legend>Serial I/O</legend>
-                <div class="serial-panel-content">
-                    <div class="field-row">
-                        <span id="connPill" class="status-pill"></span>
-                        <label for="portSelect">Port:</label>
-                        <select id="portSelect" style="flex-grow:1; margin-left: 5px; padding: 2px;">
-                            <option value="">-- Select Port --</option>
-                        </select>
-                    </div>
-                    <div class="field-row" style="gap: 5px; justify-content: space-between;">
-                        <button id="btnAuthorize" class="btn" style="flex:1;">Authorize Port</button>
-                        <button id="btnDisconnect" class="btn" disabled style="flex:1;">Disconnect</button>
-                    </div>
-                    <div class="field-row" style="justify-content: space-between;">
-                        <button id="btnSaveCfg" class="btn" style="width:100%;">Save serstat.cfg</button>
-                    </div>
-                    <div class="field-row">
-                        <input type="file" id="cfgFileInput" accept=".cfg,.json" style="font-size:0.75rem; width:100%;">
-                    </div>
-                </div>
-            </fieldset>
-        </div>
+    <!-- 1. Mouse Keying Area on Top -->
+    <div id="mouseKeyArea" class="keying-area">
+        Mouse keying area
     </div>
 
-    <!-- Text Transmitter (TX) Panel -->
-    <fieldset style="margin-top: 5px;">
-        <legend>Text Transmitter (TX)</legend>
-        <div style="display: grid; grid-template-columns: 1fr 80px; gap: 10px; align-items: start;">
-            <div>
-                <textarea id="txInput" class="tx-textarea" placeholder="Type or paste text here to send in Morse code... (Ctrl+Enter to Start/Stop TX)"></textarea>
-                <div style="font-size: 0.75rem; color: #555; margin-top: 2px;">Sent Text Output:</div>
-                <div id="sentDisplay" class="sent-text-display"></div>
-            </div>
-            <div style="display: flex; flex-direction: column; gap: 6px; height: 100%;">
-                <button id="btnTX" class="btn btn-tx" style="height: 50px;">TX</button>
-                <button id="btnClearSent" class="btn" style="font-size:0.75rem;">Clear Sent</button>
-            </div>
+    <!-- Volume Control (Always Visible) -->
+    <fieldset>
+        <legend>Volume</legend>
+        <div class="field-row">
+            <input type="range" id="volumeSlider" min="0" max="100" value="50">
+            <span id="volumeVal" style="width: 45px; font-weight: bold; text-align: right;">50%</span>
         </div>
     </fieldset>
 
-    <div class="bottom-bar">
-        <a href="#" id="helpLink" class="help-link">
-            <span style="color:#0033cc; font-size:1.1rem;">ⓘ</span> Help me
-        </a>
+    <!-- 2. Text Transmitter (TX) Panel (Always Visible) -->
+    <fieldset>
+        <legend>Text Transmitter (TX)</legend>
+        <div style="font-size: 0.85rem; color: #444; margin-bottom: 4px;">Sent Text Output:</div>
+        <div id="sentDisplay" class="sent-text-display"></div>
+        <textarea id="txInput" class="tx-textarea" placeholder="Type text here to send... (Ctrl+Enter to Start/Stop TX)"></textarea>
+        
+        <div style="display: flex; gap: 10px; margin-top: 8px;">
+            <button id="btnTX" class="btn btn-tx" style="flex: 2;">TX</button>
+            <button id="btnClearSent" class="btn" style="flex: 1;">Clear</button>
+        </div>
+    </fieldset>
+
+    <!-- 3. Collapsible Settings Panel -->
+    <div id="settingsHeader" class="collapsible-header">
+        <span>⚙ Settings</span>
+        <span id="settingsArrow">▼</span>
     </div>
 
-    <!-- Console Log -->
+    <div id="settingsContent" class="collapsible-content">
+        <!-- Speed & Modes -->
+        <fieldset>
+            <legend>Keyer Mode & Speed</legend>
+            <div class="field-row">
+                <label for="wpmSlider">Speed (WPM): <span id="wpmVal" style="font-weight:bold;">17</span></label>
+            </div>
+            <div class="field-row">
+                <input type="range" id="wpmSlider" min="5" max="30" value="17">
+            </div>
+
+            <hr style="border: none; border-top: 1px solid #ccc; margin: 10px 0;">
+
+            <div class="field-row">
+                <label><input type="radio" id="modeStraight" name="keyerMode" value="straight"> Straight key</label>
+            </div>
+            <div class="field-row">
+                <label><input type="radio" id="modeBug" name="keyerMode" value="bug"> Semi-auto (bug)</label>
+            </div>
+            <div class="field-row">
+                <label><input type="radio" id="modeIambic" name="keyerMode" value="iambic" checked> Iambic paddles</label>
+                <div>
+                    <label><input type="checkbox" id="chkModeA" checked> Mode A</label>
+                    <div id="modeBIndicator" class="indicator-box" title="Iambic B trailing memory"></div>
+                </div>
+            </div>
+            <div class="field-row">
+                <label><input type="radio" id="modeUltimatic" name="keyerMode" value="ultimatic"> Ultimatic paddles</label>
+                <label><input type="checkbox" id="chkSwap"> Swap L/R</label>
+            </div>
+        </fieldset>
+
+        <!-- Audio Settings -->
+        <fieldset>
+            <legend>Sound Settings</legend>
+            <div class="field-row">
+                <label for="toneFreqSlider">Tone Freq: <span id="toneFreqVal" style="font-weight:bold;">600</span> Hz</label>
+            </div>
+            <div class="field-row">
+                <input type="range" id="toneFreqSlider" min="500" max="1200" step="50" value="600">
+            </div>
+
+            <div class="field-row" style="flex-direction: column; align-items: flex-start; margin-top: 10px;">
+                <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+                    <label for="audioDevices">Output Device:</label>
+                    <button id="btnScanAudio" class="btn" style="padding: 4px 8px; font-size: 0.85rem;">Detect</button>
+                </div>
+                <select id="audioDevices" style="width: 100%; margin-top: 6px; padding: 6px; font-size: 0.95rem;">
+                    <option value="default">Default Audio Device</option>
+                </select>
+            </div>
+        </fieldset>
+
+        <!-- Serial I/O & Configuration -->
+        <fieldset>
+            <legend>Serial I/O & Config</legend>
+            <div class="field-row">
+                <span id="connPill" class="status-pill"></span>
+                <select id="portSelect" style="flex-grow:1; padding: 6px; font-size: 0.95rem;">
+                    <option value="">-- Select Serial Port --</option>
+                </select>
+            </div>
+            <div class="field-row" style="gap: 8px;">
+                <button id="btnAuthorize" class="btn" style="flex:1;">Authorize</button>
+                <button id="btnDisconnect" class="btn" disabled style="flex:1;">Disconnect</button>
+            </div>
+            <div class="field-row">
+                <button id="btnSaveCfg" class="btn" style="width:100%;">Save serstat.cfg</button>
+            </div>
+            <div class="field-row">
+                <input type="file" id="cfgFileInput" accept=".cfg,.json" style="font-size:0.85rem; width:100%;">
+            </div>
+        </fieldset>
+    </div>
+
+    <!-- Info Log -->
     <div id="log"></div>
 
-    <!-- Mobile Touch / Screen Input Bar -->
+    <div class="bottom-bar">
+        <a href="#" id="helpLink" class="help-link">ⓘ Help me</a>
+    </div>
+
+    <!-- 4. Touch Screen Input Bar -->
     <div class="touch-pad-container">
         <div id="touchLeft" class="touch-pad touch-pad-left">L</div>
         <div id="touchStraight" class="touch-pad touch-pad-middle">S</div>
@@ -489,7 +459,7 @@
 <!-- Custom Help Screen Modal -->
 <div id="helpModal" class="modal-overlay">
     <div class="modal-card">
-        <h2>Welcome to Web Morse Keyer 1.0!</h2>
+        <h2 style="margin-top:0;">Welcome to Web Morse Keyer 1.0!</h2>
         <p>You can use any of these as input:</p>
 
         <table class="help-table">
@@ -497,8 +467,8 @@
                 <tr>
                     <th>Function</th>
                     <th>Keyboard</th>
-                    <th>Serial I/O Port</th>
-                    <th>Mouse keying area</th>
+                    <th>Serial Port</th>
+                    <th>Mouse/Touch</th>
                 </tr>
             </thead>
             <tbody>
@@ -506,55 +476,39 @@
                     <td>Left paddle</td>
                     <td>[</td>
                     <td>CTS</td>
-                    <td>Left button</td>
+                    <td>Left / Touch "L"</td>
                 </tr>
                 <tr>
                     <td>Right paddle</td>
                     <td>]</td>
                     <td>DSR</td>
-                    <td>Right button</td>
+                    <td>Right / Touch "R"</td>
                 </tr>
             </tbody>
         </table>
 
-        <p>Other keyboard shortcuts:</p>
-
-        <table class="help-table" style="width: 55%;">
-            <thead>
-                <tr>
-                    <th>Key</th>
-                    <th>Function</th>
-                </tr>
-            </thead>
+        <p>Shortcuts:</p>
+        <table class="help-table">
             <tbody>
-                <tr>
-                    <td>\</td>
-                    <td>Straight key</td>
-                </tr>
-                <tr>
-                    <td>-</td>
-                    <td>Decrease speed</td>
-                </tr>
-                <tr>
-                    <td>=</td>
-                    <td>Increase speed</td>
-                </tr>
-                <tr>
-                    <td>CTRL-ENTER</td>
-                    <td>Toggle TX</td>
-                </tr>
+                <tr><td>\</td><td>Straight key</td></tr>
+                <tr><td>-</td><td>Decrease speed</td></tr>
+                <tr><td>=</td><td>Increase speed</td></tr>
+                <tr><td>CTRL-ENTER</td><td>Toggle TX</td></tr>
             </tbody>
         </table>
 
-        <p>This web application is inspired by Morse Keyer app for Windows developed by <i>Robert B. Denny</i> (<a href="mailto:rdenny@dc3.com">rdenny@dc3.com</a>).</p>
-        <p>Created by: <i>Judhi A65IV</i> (<a href="mailto:judhi.a65iv@gmail.com">judhi.a65iv@gmail.com</a>)</p>
+        <p style="font-size:0.85rem; margin-bottom: 5px;">Inspired by Windows Morse Keyer by <i>Robert B. Denny</i> (rdenny@dc3.com).</p>
+        <p style="font-size:0.85rem; margin-top: 0;">Created by: <i>Judhi A65IV</i> (judhi.a65iv@gmail.com)</p>
 
-        <button id="closeHelpModal" class="btn close-btn">Close</button>
+        <button id="closeHelpModal" class="btn" style="width:100%; margin-top:10px;">Close</button>
     </div>
 </div>
 
 <script>
-    // Global Audio Context & Engine
+    // Constants
+    const RISE_FALL_MS = 8; // Default fixed rise/fall time
+
+    // Global Audio Context & Nodes
     let audioCtx = null;
     let oscNode = null;
     let envelopeGainNode = null;
@@ -566,7 +520,7 @@
     let pollInterval = null;
     let authorizedPorts = [];
 
-    // State Machine Flags
+    // State Flags
     let isDitPressed = false;
     let isDahPressed = false;
     let isDirectTonePressed = false;
@@ -575,18 +529,19 @@
     let lastPressed = null;    
     let latchMemory = null;    
 
-    // TX Automated Transmitter Engine
+    // TX Engine
     let isTXActive = false;
     let txTimer = null;
 
-    // Touch Pads State
+    // Touch States
     let touchDit = false;
     let touchDah = false;
 
-    // UI Elements
-    const wpmInput = document.getElementById('wpmInput');
-    const toneFreqInput = document.getElementById('toneFreq');
-    const riseFallInput = document.getElementById('riseFall');
+    // Elements
+    const wpmSlider = document.getElementById('wpmSlider');
+    const wpmVal = document.getElementById('wpmVal');
+    const toneFreqSlider = document.getElementById('toneFreqSlider');
+    const toneFreqVal = document.getElementById('toneFreqVal');
     const volumeSlider = document.getElementById('volumeSlider');
     const volumeVal = document.getElementById('volumeVal');
     const chkModeA = document.getElementById('chkModeA');
@@ -608,13 +563,14 @@
     const helpLink = document.getElementById('helpLink');
     const helpModal = document.getElementById('helpModal');
     const closeHelpModal = document.getElementById('closeHelpModal');
+    const settingsHeader = document.getElementById('settingsHeader');
+    const settingsContent = document.getElementById('settingsContent');
+    const settingsArrow = document.getElementById('settingsArrow');
 
-    // Touch Pad UI Elements
     const touchLeft = document.getElementById('touchLeft');
     const touchStraight = document.getElementById('touchStraight');
     const touchRight = document.getElementById('touchRight');
 
-    // Morse Code Table
     const MORSE_TABLE = {
         'A': '.-',    'B': '-...',  'C': '-.-.',  'D': '-..',   'E': '.',
         'F': '..-.',  'G': '--.',   'H': '....',  'I': '..',    'J': '.---',
@@ -635,15 +591,15 @@
         div.scrollTop = div.scrollHeight;
     }
 
-    // Modal Control
-    helpLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        helpModal.style.display = 'flex';
+    // Toggle Collapsible Settings Panel
+    settingsHeader.addEventListener('click', () => {
+        const isOpen = settingsContent.classList.toggle('open');
+        settingsArrow.textContent = isOpen ? '▲' : '▼';
     });
 
-    closeHelpModal.addEventListener('click', () => {
-        helpModal.style.display = 'none';
-    });
+    // Modal Control
+    helpLink.addEventListener('click', (e) => { e.preventDefault(); helpModal.style.display = 'flex'; });
+    closeHelpModal.addEventListener('click', () => { helpModal.style.display = 'none'; });
 
     // Auto-blur controls so keyboard shortcuts always work
     document.addEventListener('mouseup', (e) => {
@@ -653,41 +609,14 @@
         }
     });
 
-    document.addEventListener('change', (e) => {
-        if (['INPUT', 'SELECT', 'BUTTON'].includes(e.target.tagName)) {
-            if (e.target.id === 'txInput') return;
-            e.target.blur();
+    // Slider Listeners
+    wpmSlider.addEventListener('input', () => { wpmVal.textContent = wpmSlider.value; });
+    toneFreqSlider.addEventListener('input', () => {
+        toneFreqVal.textContent = toneFreqSlider.value;
+        if (oscNode && audioCtx) {
+            oscNode.frequency.setValueAtTime(parseFloat(toneFreqSlider.value), audioCtx.currentTime);
         }
     });
-
-    // --- Audio Engine Initialization ---
-    function initAudio() {
-        if (!audioCtx) {
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            oscNode = audioCtx.createOscillator();
-            envelopeGainNode = audioCtx.createGain();
-            masterGainNode = audioCtx.createGain();
-
-            oscNode.type = 'sine';
-            oscNode.frequency.setValueAtTime(parseFloat(toneFreqInput.value), audioCtx.currentTime);
-            
-            envelopeGainNode.gain.setValueAtTime(0, audioCtx.currentTime);
-            
-            const vol = parseFloat(volumeSlider.value) / 100;
-            masterGainNode.gain.setValueAtTime(vol, audioCtx.currentTime);
-
-            oscNode.connect(envelopeGainNode);
-            envelopeGainNode.connect(masterGainNode);
-            masterGainNode.connect(audioCtx.destination);
-            
-            oscNode.start();
-            log("Audio Engine initialized.");
-        }
-        if (audioCtx.state === 'suspended') {
-            audioCtx.resume();
-        }
-    }
-
     volumeSlider.addEventListener('input', () => {
         const val = volumeSlider.value;
         volumeVal.textContent = `${val}%`;
@@ -696,11 +625,31 @@
         }
     });
 
-    // --- Audio Output Device Detection ---
+    // Audio Engine
+    function initAudio() {
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            oscNode = audioCtx.createOscillator();
+            envelopeGainNode = audioCtx.createGain();
+            masterGainNode = audioCtx.createGain();
+
+            oscNode.type = 'sine';
+            oscNode.frequency.setValueAtTime(parseFloat(toneFreqSlider.value), audioCtx.currentTime);
+            envelopeGainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+            
+            masterGainNode.gain.setValueAtTime(parseFloat(volumeSlider.value) / 100, audioCtx.currentTime);
+
+            oscNode.connect(envelopeGainNode);
+            envelopeGainNode.connect(masterGainNode);
+            masterGainNode.connect(audioCtx.destination);
+            oscNode.start();
+            log("Audio Engine ready.");
+        }
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+    }
+
     async function updateAudioDevices() {
         initAudio();
-        log("Scanning for output devices...");
-
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
             stream.getTracks().forEach(track => track.stop());
@@ -709,50 +658,31 @@
             const audioOutputs = devices.filter(d => d.kind === 'audiooutput');
 
             audioDevicesSelect.innerHTML = '';
-
-            if (audioOutputs.length === 0) {
-                audioDevicesSelect.innerHTML = '<option value="default">Default Audio Device</option>';
-                log("No additional audio outputs returned by browser.");
-                return;
-            }
-
             audioOutputs.forEach((device, i) => {
                 const opt = document.createElement('option');
                 opt.value = device.deviceId;
-                opt.textContent = device.label || `Audio Endpoint ${i + 1} (${device.deviceId.substring(0, 8)}...)`;
+                opt.textContent = device.label || `Device ${i + 1}`;
                 audioDevicesSelect.appendChild(opt);
             });
-
-            log(`Successfully listed ${audioOutputs.length} audio output devices.`);
+            log(`Found ${audioOutputs.length} audio devices.`);
         } catch (err) {
-            log(`Device Scan Permission Note: ${err.message}`);
+            log(`Scan error: ${err.message}`);
         }
     }
 
     btnScanAudio.addEventListener('click', updateAudioDevices);
-
     audioDevicesSelect.addEventListener('change', async () => {
         initAudio();
-        const deviceId = audioDevicesSelect.value;
         if (typeof audioCtx.setSinkId === 'function') {
             try {
-                await audioCtx.setSinkId(deviceId);
-                log(`Audio output switched to device ID: ${deviceId}`);
-            } catch (err) {
-                log(`Audio Switch Error: ${err.message}`);
-            }
-        }
-    });
-
-    toneFreqInput.addEventListener('change', () => {
-        if (oscNode && audioCtx) {
-            oscNode.frequency.setValueAtTime(parseFloat(toneFreqInput.value), audioCtx.currentTime);
+                await audioCtx.setSinkId(audioDevicesSelect.value);
+                log(`Audio routed.`);
+            } catch (err) { log(`Audio Route Error: ${err.message}`); }
         }
     });
 
     function startSound(type = null) {
         initAudio();
-
         if (type === 'dit') {
             mouseKeyArea.classList.add('dit-active');
             mouseKeyArea.classList.remove('dah-active');
@@ -765,8 +695,7 @@
         isAudible = true;
 
         const now = audioCtx.currentTime;
-        const rampTime = Math.max(0.001, parseFloat(riseFallInput.value) / 1000);
-        
+        const rampTime = RISE_FALL_MS / 1000;
         envelopeGainNode.gain.cancelScheduledValues(now);
         envelopeGainNode.gain.setTargetAtTime(1.0, now, rampTime / 3);
     }
@@ -779,22 +708,17 @@
         isAudible = false;
 
         const now = audioCtx.currentTime;
-        const rampTime = Math.max(0.001, parseFloat(riseFallInput.value) / 1000);
-
+        const rampTime = RISE_FALL_MS / 1000;
         envelopeGainNode.gain.cancelScheduledValues(now);
         envelopeGainNode.gain.setTargetAtTime(0.00001, now, rampTime / 3);
     }
 
-    // --- Keyer Engine Logic ---
-    function getMode() {
-        return document.querySelector('input[name="keyerMode"]:checked').value;
-    }
-
+    // Keyer Machine
+    function getMode() { return document.querySelector('input[name="keyerMode"]:checked').value; }
     function getTiming() {
-        const wpm = parseInt(wpmInput.value, 10) || 17;
-        const ditMs = 1200 / wpm; // PARIS standard
-        const dahMs = ditMs * 3;
-        return { ditMs, dahMs };
+        const wpm = parseInt(wpmSlider.value, 10) || 17;
+        const ditMs = 1200 / wpm;
+        return { ditMs, dahMs: ditMs * 3 };
     }
 
     function flashModeB() {
@@ -804,7 +728,6 @@
 
     function setPhysicalState(ditState, dahState) {
         if (isDirectTonePressed) return;
-
         const swap = chkSwap.checked;
         const newDit = swap ? dahState : ditState;
         const newDah = swap ? ditState : dahState;
@@ -819,66 +742,44 @@
             if (currentElement === 'dit' && isDahPressed) latchMemory = 'dah';
             if (currentElement === 'dah' && isDitPressed) latchMemory = 'dit';
         }
-
         processKeyerLoop();
     }
 
     function processKeyerLoop() {
         if (isDirectTonePressed) return;
-
         const mode = getMode();
 
         if (mode === 'straight') {
-            if (isDitPressed) {
-                startSound('dit');
-            } else if (isDahPressed) {
-                startSound('dah');
-            } else {
-                stopSound();
-            }
+            if (isDitPressed) startSound('dit');
+            else if (isDahPressed) startSound('dah');
+            else stopSound();
             return;
         }
 
         if (keyerTimer !== null) return;
-
         let nextElement = null;
 
         if (mode === 'bug') {
             if (isDitPressed) nextElement = 'dit';
-            else if (isDahPressed) {
-                startSound('dah');
-                return;
-            } else {
-                stopSound();
-                return;
-            }
+            else if (isDahPressed) { startSound('dah'); return; }
+            else { stopSound(); return; }
         } else if (mode === 'iambic') {
-            if (isDitPressed && isDahPressed) {
-                nextElement = (currentElement === 'dit') ? 'dah' : 'dit';
-            } else if (isDitPressed) {
-                nextElement = 'dit';
-            } else if (isDahPressed) {
-                nextElement = 'dah';
-            } else if (latchMemory !== null) {
+            if (isDitPressed && isDahPressed) nextElement = (currentElement === 'dit') ? 'dah' : 'dit';
+            else if (isDitPressed) nextElement = 'dit';
+            else if (isDahPressed) nextElement = 'dah';
+            else if (latchMemory !== null) {
                 nextElement = latchMemory;
                 latchMemory = null;
                 flashModeB();
             }
         } else if (mode === 'ultimatic') {
-            if (isDitPressed && isDahPressed) {
-                nextElement = lastPressed || 'dit';
-            } else if (isDitPressed) {
-                nextElement = 'dit';
-            } else if (isDahPressed) {
-                nextElement = 'dah';
-            }
+            if (isDitPressed && isDahPressed) nextElement = lastPressed || 'dit';
+            else if (isDitPressed) nextElement = 'dit';
+            else if (isDahPressed) nextElement = 'dah';
         }
 
-        if (nextElement) {
-            runElement(nextElement);
-        } else {
-            currentElement = null;
-        }
+        if (nextElement) runElement(nextElement);
+        else currentElement = null;
     }
 
     function runElement(elem) {
@@ -890,7 +791,6 @@
 
         keyerTimer = setTimeout(() => {
             stopSound();
-
             keyerTimer = setTimeout(() => {
                 keyerTimer = null;
                 processKeyerLoop();
@@ -898,19 +798,16 @@
         }, duration);
     }
 
-    // --- CW Text Transmitter (TX Engine) ---
+    // TX Engine
     function toggleTX() {
         initAudio();
         isTXActive = !isTXActive;
-
         if (isTXActive) {
             btnTX.classList.add('active');
             btnTX.textContent = 'STOP TX';
-            log('TX Transmission started.');
+            log('TX started.');
             processTXQueue();
-        } else {
-            stopTX();
-        }
+        } else stopTX();
     }
 
     function stopTX() {
@@ -920,57 +817,39 @@
         if (txTimer) clearTimeout(txTimer);
         txTimer = null;
         stopSound();
-        log('TX Transmission stopped.');
+        log('TX stopped.');
     }
 
     function processTXQueue() {
         if (!isTXActive) return;
-
         const text = txInput.value;
-        if (!text || text.length === 0) {
-            log('TX input empty. Stopping transmission.');
-            stopTX();
-            return;
-        }
+        if (!text || text.length === 0) { stopTX(); return; }
 
         const char = text.charAt(0);
-        const upperChar = char.toUpperCase();
-
         txInput.value = text.substring(1);
         sentDisplay.textContent += char;
         sentDisplay.scrollTop = sentDisplay.scrollHeight;
 
-        const { ditMs, dahMs } = getTiming();
+        const { ditMs } = getTiming();
 
         if (char === ' ' || char === '\n') {
-            txTimer = setTimeout(() => {
-                processTXQueue();
-            }, ditMs * 7);
+            txTimer = setTimeout(processTXQueue, ditMs * 7);
             return;
         }
 
-        const morseSeq = MORSE_TABLE[upperChar];
-
+        const morseSeq = MORSE_TABLE[char.toUpperCase()];
         if (!morseSeq) {
-            txTimer = setTimeout(() => {
-                processTXQueue();
-            }, ditMs);
+            txTimer = setTimeout(processTXQueue, ditMs);
             return;
         }
 
         playMorseSequence(morseSeq, 0, () => {
-            txTimer = setTimeout(() => {
-                processTXQueue();
-            }, ditMs * 3);
+            txTimer = setTimeout(processTXQueue, ditMs * 3);
         });
     }
 
     function playMorseSequence(seq, index, onComplete) {
-        if (!isTXActive || index >= seq.length) {
-            if (onComplete) onComplete();
-            return;
-        }
-
+        if (!isTXActive || index >= seq.length) { if (onComplete) onComplete(); return; }
         const symbol = seq.charAt(index);
         const { ditMs, dahMs } = getTiming();
         const duration = (symbol === '.') ? ditMs : dahMs;
@@ -979,7 +858,6 @@
 
         txTimer = setTimeout(() => {
             stopSound();
-
             txTimer = setTimeout(() => {
                 playMorseSequence(seq, index + 1, onComplete);
             }, ditMs);
@@ -987,19 +865,11 @@
     }
 
     btnTX.addEventListener('click', toggleTX);
-    btnClearSent.addEventListener('click', () => {
-        sentDisplay.textContent = '';
-    });
+    btnClearSent.addEventListener('click', () => { sentDisplay.textContent = ''; });
 
-    // --- Mouse, Touch & Keyboard Input Handler ---
-    let mouseDit = false;
-    let mouseDah = false;
-    let keyDit = false;
-    let keyDah = false;
-
-    function updateInputs() {
-        setPhysicalState(mouseDit || keyDit || touchDit, mouseDah || keyDah || touchDah);
-    }
+    // Key / Touch Event Handlers
+    let mouseDit = false, mouseDah = false, keyDit = false, keyDah = false;
+    function updateInputs() { setPhysicalState(mouseDit || keyDit || touchDit, mouseDah || keyDah || touchDah); }
 
     mouseKeyArea.addEventListener('mousedown', (e) => {
         initAudio();
@@ -1013,161 +883,71 @@
     window.addEventListener('mouseup', (e) => {
         if (e.button === 0) mouseDit = false;
         if (e.button === 2) mouseDah = false;
-        if (!mouseDit && !mouseDah) mouseKeyArea.classList.remove('active');
+        mouseKeyArea.classList.remove('active');
         updateInputs();
     });
-
     mouseKeyArea.addEventListener('contextmenu', e => e.preventDefault());
 
-    // --- Mobile Touch Pad Events (L / S / R) ---
-    function bindTouchEvents(element, startFn, endFn) {
-        element.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            initAudio();
-            element.classList.add('active');
-            startFn();
+    function bindTouchEvents(elem, startFn, endFn) {
+        elem.addEventListener('touchstart', (e) => {
+            e.preventDefault(); initAudio(); elem.classList.add('active'); startFn();
         }, { passive: false });
-
-        element.addEventListener('touchend', (e) => {
-            e.preventDefault();
-            element.classList.remove('active');
-            endFn();
+        elem.addEventListener('touchend', (e) => {
+            e.preventDefault(); elem.classList.remove('active'); endFn();
         }, { passive: false });
-
-        element.addEventListener('mousedown', (e) => {
-            initAudio();
-            element.classList.add('active');
-            startFn();
-        });
-
-        element.addEventListener('mouseup', (e) => {
-            element.classList.remove('active');
-            endFn();
-        });
-
-        element.addEventListener('mouseleave', (e) => {
-            element.classList.remove('active');
-            endFn();
-        });
+        elem.addEventListener('mousedown', () => { initAudio(); elem.classList.add('active'); startFn(); });
+        elem.addEventListener('mouseup', () => { elem.classList.remove('active'); endFn(); });
+        elem.addEventListener('mouseleave', () => { elem.classList.remove('active'); endFn(); });
     }
 
-    // Touch Left = Dit Paddle
-    bindTouchEvents(touchLeft, () => {
-        touchDit = true;
-        updateInputs();
-    }, () => {
-        touchDit = false;
-        updateInputs();
-    });
+    bindTouchEvents(touchLeft, () => { touchDit = true; updateInputs(); }, () => { touchDit = false; updateInputs(); });
+    bindTouchEvents(touchStraight, () => { isDirectTonePressed = true; startSound('dit'); }, () => { isDirectTonePressed = false; stopSound(); });
+    bindTouchEvents(touchRight, () => { touchDah = true; updateInputs(); }, () => { touchDah = false; updateInputs(); });
 
-    // Touch Middle = Straight Key (\)
-    bindTouchEvents(touchStraight, () => {
-        isDirectTonePressed = true;
-        startSound('dit');
-    }, () => {
-        isDirectTonePressed = false;
-        stopSound();
-    });
-
-    // Touch Right = Dah Paddle
-    bindTouchEvents(touchRight, () => {
-        touchDah = true;
-        updateInputs();
-    }, () => {
-        touchDah = false;
-        updateInputs();
-    });
-
-    // Keyboard Shortcuts Handler
     window.addEventListener('keydown', (e) => {
-        if (e.ctrlKey && e.key === 'Enter') {
-            e.preventDefault();
-            toggleTX();
-            return;
-        }
-
-        // Handle '\' Key: Continuous Tone
+        if (e.ctrlKey && e.key === 'Enter') { e.preventDefault(); toggleTX(); return; }
         if (e.key === '\\') {
-            if (!isDirectTonePressed) {
-                isDirectTonePressed = true;
-                initAudio();
-                startSound('dit');
-            }
+            if (!isDirectTonePressed) { isDirectTonePressed = true; initAudio(); startSound('dit'); }
             return;
         }
 
         const keyingKeys = ['[', ']', '-', '_', '=', '+'];
         if (keyingKeys.includes(e.key) && document.activeElement && document.activeElement.id !== 'txInput') {
             document.activeElement.blur();
-        } else if (document.activeElement && document.activeElement.id === 'txInput') {
-            return;
-        }
+        } else if (document.activeElement && document.activeElement.id === 'txInput') return;
 
         initAudio();
-
-        if (e.key === '[') {
+        if (e.key === '[') { e.preventDefault(); keyDit = true; updateInputs(); }
+        else if (e.key === ']') { e.preventDefault(); keyDah = true; updateInputs(); }
+        else if (e.key === '-' || e.key === '_') {
             e.preventDefault();
-            keyDit = true;
-            updateInputs();
-        } else if (e.key === ']') {
-            e.preventDefault();
-            keyDah = true;
-            updateInputs();
-        } else if (e.key === '-' || e.key === '_') {
-            e.preventDefault();
-            const currentWpm = parseInt(wpmInput.value, 10) || 17;
-            const newWpm = Math.max(5, currentWpm - 1);
-            wpmInput.value = newWpm;
-            log(`Speed decreased to ${newWpm} WPM`);
+            const val = Math.max(5, parseInt(wpmSlider.value, 10) - 1);
+            wpmSlider.value = val; wpmVal.textContent = val;
         } else if (e.key === '=' || e.key === '+') {
             e.preventDefault();
-            const currentWpm = parseInt(wpmInput.value, 10) || 17;
-            const newWpm = Math.min(60, currentWpm + 1);
-            wpmInput.value = newWpm;
-            log(`Speed increased to ${newWpm} WPM`);
+            const val = Math.min(30, parseInt(wpmSlider.value, 10) + 1);
+            wpmSlider.value = val; wpmVal.textContent = val;
         }
     });
 
     window.addEventListener('keyup', (e) => {
-        if (e.key === '\\') {
-            isDirectTonePressed = false;
-            stopSound();
-            return;
-        }
-
-        if (e.key === '[') {
-            keyDit = false;
-            updateInputs();
-        } else if (e.key === ']') {
-            keyDah = false;
-            updateInputs();
-        }
+        if (e.key === '\\') { isDirectTonePressed = false; stopSound(); return; }
+        if (e.key === '[') { keyDit = false; updateInputs(); }
+        else if (e.key === ']') { keyDah = false; updateInputs(); }
     });
 
     document.querySelectorAll('input[name="keyerMode"]').forEach(radio => {
         radio.addEventListener('change', () => {
-            stopSound();
-            if (keyerTimer) clearTimeout(keyerTimer);
-            keyerTimer = null;
-            currentElement = null;
-            latchMemory = null;
+            stopSound(); if (keyerTimer) clearTimeout(keyerTimer);
+            keyerTimer = null; currentElement = null; latchMemory = null;
             processKeyerLoop();
         });
     });
 
-    // --- Web Serial API Integration ---
+    // Serial
     async function closeSerialPort() {
-        if (pollInterval) {
-            clearInterval(pollInterval);
-            pollInterval = null;
-        }
-        if (activePort) {
-            try {
-                await activePort.close();
-                log("Serial port disconnected.");
-            } catch (err) {}
-            activePort = null;
-        }
+        if (pollInterval) { clearInterval(pollInterval); pollInterval = null; }
+        if (activePort) { try { await activePort.close(); } catch (err) {} activePort = null; }
         connPill.className = "status-pill";
         btnDisconnect.disabled = true;
     }
@@ -1175,11 +955,10 @@
     async function openAndMonitorPort(port) {
         await closeSerialPort();
         if (!port) return;
-
         try {
             await port.open({ baudRate: 9600 });
             activePort = port;
-            log("Connected to Serial Port.");
+            log("Serial port connected.");
             connPill.className = "status-pill connected";
             btnDisconnect.disabled = false;
 
@@ -1187,41 +966,27 @@
                 if (!activePort || !activePort.connected) return;
                 try {
                     const signals = await activePort.getSignals();
-                    const serialDit = signals.clearToSend;  // CTS
-                    const serialDah = signals.dataSetReady; // DSR
-
-                    setPhysicalState(serialDit || mouseDit || keyDit || touchDit, serialDah || mouseDah || keyDah || touchDah);
-                } catch (err) {
-                    log(`Signal error: ${err.message}`);
-                }
+                    setPhysicalState(signals.clearToSend || mouseDit || keyDit || touchDit, signals.dataSetReady || mouseDah || keyDah || touchDah);
+                } catch (err) {}
             }, 10);
-        } catch (err) {
-            log(`Failed to open port: ${err.message}`);
-            btnDisconnect.disabled = true;
-            connPill.className = "status-pill";
-        }
+        } catch (err) { log(`Serial Fail: ${err.message}`); }
     }
 
     async function refreshPortList(targetIndexToOpen = null) {
         if (!("serial" in navigator)) return;
         authorizedPorts = await navigator.serial.getPorts();
-        
         portSelect.innerHTML = '';
         if (authorizedPorts.length === 0) {
             const opt = document.createElement('option');
-            opt.value = "";
-            opt.textContent = "-- Click Authorize --";
+            opt.value = ""; opt.textContent = "-- Click Authorize --";
             portSelect.appendChild(opt);
             return;
         }
-
         authorizedPorts.forEach((port, idx) => {
             const info = port.getInfo();
             const opt = document.createElement('option');
             opt.value = idx;
-            const vid = info.usbVendorId ? `0x${info.usbVendorId.toString(16).padStart(4, '0')}` : 'N/A';
-            const pid = info.usbProductId ? `0x${info.usbProductId.toString(16).padStart(4, '0')}` : 'N/A';
-            opt.textContent = `Port ${idx + 1} (${vid}:${pid})`;
+            opt.textContent = `Port ${idx + 1} (${info.usbVendorId ? '0x'+info.usbVendorId.toString(16) : 'N/A'})`;
             portSelect.appendChild(opt);
         });
 
@@ -1232,106 +997,59 @@
     }
 
     btnAuthorize.addEventListener('click', async () => {
-        if (!("serial" in navigator)) {
-            alert("Web Serial API is not supported in this browser. Use Chrome or Edge.");
-            return;
-        }
+        if (!("serial" in navigator)) { alert("Web Serial not supported."); return; }
         try {
             await navigator.serial.requestPort();
             const ports = await navigator.serial.getPorts();
             await refreshPortList(ports.length - 1);
-        } catch (err) {
-            log(`Port selection cancelled: ${err.message}`);
-        }
+        } catch (err) {}
     });
 
-    btnDisconnect.addEventListener('click', async () => {
-        await closeSerialPort();
-        portSelect.value = "";
-    });
-
+    btnDisconnect.addEventListener('click', async () => { await closeSerialPort(); portSelect.value = ""; });
     portSelect.addEventListener('change', async () => {
         const idx = portSelect.value;
-        if (idx === "" || !authorizedPorts[idx]) {
-            await closeSerialPort();
-            return;
-        }
+        if (idx === "" || !authorizedPorts[idx]) { await closeSerialPort(); return; }
         await openAndMonitorPort(authorizedPorts[idx]);
     });
 
-    // --- serstat.cfg Export & Import ---
     btnSaveCfg.addEventListener('click', () => {
         const idx = portSelect.value;
-        let portInfo = {};
-        if (idx !== "" && authorizedPorts[idx]) {
-            portInfo = authorizedPorts[idx].getInfo();
-        }
-
+        let portInfo = (idx !== "" && authorizedPorts[idx]) ? authorizedPorts[idx].getInfo() : {};
         const config = {
-            mode: getMode(),
-            wpm: wpmInput.value,
-            modeA: chkModeA.checked,
-            swap: chkSwap.checked,
-            toneFreq: toneFreqInput.value,
-            riseFall: riseFallInput.value,
-            volume: volumeSlider.value,
-            audioDeviceId: audioDevicesSelect.value,
-            usbVendorId: portInfo.usbVendorId || null,
-            usbProductId: portInfo.usbProductId || null
+            mode: getMode(), wpm: wpmSlider.value, modeA: chkModeA.checked, swap: chkSwap.checked,
+            toneFreq: toneFreqSlider.value, volume: volumeSlider.value, audioDeviceId: audioDevicesSelect.value,
+            usbVendorId: portInfo.usbVendorId || null, usbProductId: portInfo.usbProductId || null
         };
-
         const blob = new Blob([JSON.stringify(config, null, 2)], { type: 'application/json' });
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = 'serstat.cfg';
-        a.click();
+        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'serstat.cfg'; a.click();
         URL.revokeObjectURL(a.href);
-        log("Configuration saved to serstat.cfg");
     });
 
     cfgFileInput.addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-
+        const file = e.target.files[0]; if (!file) return;
         const reader = new FileReader();
         reader.onload = async (event) => {
             try {
                 const cfg = JSON.parse(event.target.result);
-                
                 if (cfg.mode) document.querySelector(`input[name="keyerMode"][value="${cfg.mode}"]`).checked = true;
-                if (cfg.wpm) wpmInput.value = cfg.wpm;
+                if (cfg.wpm) { wpmSlider.value = cfg.wpm; wpmVal.textContent = cfg.wpm; }
                 if (cfg.modeA !== undefined) chkModeA.checked = cfg.modeA;
                 if (cfg.swap !== undefined) chkSwap.checked = cfg.swap;
-                if (cfg.toneFreq) toneFreqInput.value = cfg.toneFreq;
-                if (cfg.riseFall) riseFallInput.value = cfg.riseFall;
-                if (cfg.volume) {
-                    volumeSlider.value = cfg.volume;
-                    volumeVal.textContent = `${cfg.volume}%`;
-                }
-
-                log("Restored settings from serstat.cfg");
+                if (cfg.toneFreq) { toneFreqSlider.value = cfg.toneFreq; toneFreqVal.textContent = cfg.toneFreq; }
+                if (cfg.volume) { volumeSlider.value = cfg.volume; volumeVal.textContent = `${cfg.volume}%`; }
 
                 await refreshPortList();
                 let matchIdx = -1;
                 authorizedPorts.forEach((port, index) => {
                     const info = port.getInfo();
-                    if (info.usbVendorId === cfg.usbVendorId && info.usbProductId === cfg.usbProductId) {
-                        matchIdx = index;
-                    }
+                    if (info.usbVendorId === cfg.usbVendorId && info.usbProductId === cfg.usbProductId) matchIdx = index;
                 });
-
-                if (matchIdx !== -1) {
-                    portSelect.selectedIndex = matchIdx;
-                    await openAndMonitorPort(authorizedPorts[matchIdx]);
-                }
-            } catch (err) {
-                log(`Error reading serstat.cfg: ${err.message}`);
-            }
+                if (matchIdx !== -1) { portSelect.selectedIndex = matchIdx; await openAndMonitorPort(authorizedPorts[matchIdx]); }
+            } catch (err) {}
         };
         reader.readAsText(file);
     });
 
-    // Startup Init
     refreshPortList();
 </script>
 </body>
