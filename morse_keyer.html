@@ -38,7 +38,7 @@
             box-sizing: border-box;
         }
 
-        /* Title Bar repurposed as Top Mouse Keying Area */
+        /* Title Bar acts as Top Mouse Keying Area */
         .title-bar {
             font-weight: bold;
             font-size: 1.3rem;
@@ -63,8 +63,8 @@
         fieldset {
             border: 1px solid var(--border-color);
             border-radius: 6px;
-            padding: 12px;
-            margin-bottom: 12px;
+            padding: 10px 12px;
+            margin-bottom: 10px;
             background: #fafafa;
         }
 
@@ -79,7 +79,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin: 10px 0;
+            margin: 8px 0;
             font-size: 1.05rem;
         }
 
@@ -101,13 +101,36 @@
             cursor: pointer;
         }
 
-        /* Text Transmitter (Always Visible) */
+        /* Shorthand Macro Buttons Bar */
+        .shorthand-bar {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+
+        .btn-macro {
+            flex: 1;
+            padding: 10px 0;
+            font-size: 1.05rem;
+            font-weight: bold;
+            background: #e1e1e1;
+            border: 1px solid #7a7a7a;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .btn-macro:active, .btn-macro.active {
+            background: #cce4f7;
+        }
+
+        /* Text Transmitter Area */
         .sent-text-display {
             background-color: #111;
             color: #00ff00;
             font-family: monospace;
             padding: 8px;
-            height: 60px;
+            height: 55px;
             width: 100%;
             box-sizing: border-box;
             overflow-y: auto;
@@ -121,7 +144,7 @@
 
         .tx-textarea {
             width: 100%;
-            height: 60px;
+            height: 55px;
             box-sizing: border-box;
             resize: none;
             font-family: monospace;
@@ -158,19 +181,37 @@
             box-shadow: 0 0 10px #ff0000;
         }
 
-        /* Collapsible Settings Panel */
+        /* Collapsible Settings Panel Header */
         .collapsible-header {
             background-color: #e0e0e8;
             border: 1px solid var(--border-color);
-            padding: 12px;
+            padding: 10px 12px;
             border-radius: 6px;
             font-weight: bold;
             font-size: 1.2rem;
-            cursor: pointer;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
+        }
+
+        .collapsible-title-click {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-grow: 1;
+        }
+
+        .btn-help-inline {
+            background: #ffffff;
+            border: 1px solid var(--accent-blue);
+            color: var(--accent-blue);
+            padding: 3px 8px;
+            font-size: 0.95rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
         }
 
         .collapsible-content {
@@ -213,7 +254,7 @@
             display: flex;
             width: 100%;
             height: 75px;
-            margin-top: 12px;
+            margin-top: 10px;
             border: 1px solid #333;
             border-radius: 6px;
             overflow: hidden;
@@ -253,34 +294,20 @@
             filter: brightness(1.2);
         }
 
-        .bottom-bar {
-            margin-top: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .help-link {
-            color: var(--accent-blue);
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 1.1rem;
-        }
-
         #log {
             font-family: monospace;
             font-size: 0.85rem;
             background: #000;
             color: #00ff00;
             padding: 8px;
-            height: 60px;
+            height: 55px;
             overflow-y: auto;
             margin-top: 10px;
             border: 1px solid #666;
             border-radius: 4px;
         }
 
-        /* Help Modal */
+        /* Modals (Help & Shorthand Config) */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -316,6 +343,26 @@
         }
 
         .help-table th { background-color: #e2e2e2; }
+
+        .macro-config-row {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            gap: 10px;
+        }
+
+        .macro-config-row label {
+            font-weight: bold;
+            width: 30px;
+        }
+
+        .macro-config-row input {
+            flex-grow: 1;
+            padding: 8px;
+            font-size: 1rem;
+            border: 1px solid #888;
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body>
@@ -338,20 +385,32 @@
     <!-- Text Transmitter (TX) Panel (Always Visible) -->
     <fieldset>
         <legend>Text Transmitter (TX)</legend>
-        <div style="font-size: 0.85rem; color: #444; margin-bottom: 4px;">Sent Text Output:</div>
+        
+        <!-- Shorthand Macro Buttons (F1-F5) -->
+        <div class="shorthand-bar">
+            <button id="btnF1" class="btn-macro" title="Press or Long-Press to Configure">F1</button>
+            <button id="btnF2" class="btn-macro" title="Press or Long-Press to Configure">F2</button>
+            <button id="btnF3" class="btn-macro" title="Press or Long-Press to Configure">F3</button>
+            <button id="btnF4" class="btn-macro" title="Press or Long-Press to Configure">F4</button>
+            <button id="btnF5" class="btn-macro" title="Press or Long-Press to Configure">F5</button>
+        </div>
+
         <div id="sentDisplay" class="sent-text-display"></div>
-        <textarea id="txInput" class="tx-textarea" placeholder="Type text here to send... (Ctrl+Enter to Start/Stop TX)"></textarea>
+        <textarea id="txInput" class="tx-textarea" placeholder="Type text or tap F1-F5... (Ctrl+Enter to Start/Stop TX)"></textarea>
         
         <div style="display: flex; gap: 10px; margin-top: 8px;">
             <button id="btnTX" class="btn btn-tx" style="flex: 2;">TX</button>
-            <button id="btnClearSent" class="btn" style="flex: 1;">Clear</button>
+            <button id="btnUndoClear" class="btn" style="flex: 1.5; font-size:0.9rem;" title="Tap: Undo last F-key insertion | Long-Press: Clear all">Undo/Clear</button>
         </div>
     </fieldset>
 
     <!-- Collapsible Settings Panel -->
-    <div id="settingsHeader" class="collapsible-header">
-        <span>⚙ Settings</span>
-        <span id="settingsArrow">▼</span>
+    <div class="collapsible-header">
+        <div id="settingsTitleClick" class="collapsible-title-click">
+            <span>⚙ Settings</span>
+            <span id="settingsArrow">▼</span>
+        </div>
+        <button id="btnHelpInline" class="btn-help-inline">ⓘ Help</button>
     </div>
 
     <div id="settingsContent" class="collapsible-content">
@@ -407,9 +466,9 @@
             </div>
         </fieldset>
 
-        <!-- Serial I/O & Configuration -->
+        <!-- Serial I/O Panel -->
         <fieldset>
-            <legend>Serial I/O & Config</legend>
+            <legend>Serial I/O</legend>
             <div class="field-row">
                 <span id="connPill" class="status-pill"></span>
                 <select id="portSelect" style="flex-grow:1; padding: 6px; font-size: 0.95rem;">
@@ -420,21 +479,11 @@
                 <button id="btnAuthorize" class="btn" style="flex:1;">Authorize</button>
                 <button id="btnDisconnect" class="btn" disabled style="flex:1;">Disconnect</button>
             </div>
-            <div class="field-row">
-                <button id="btnSaveCfg" class="btn" style="width:100%;">Save serstat.cfg</button>
-            </div>
-            <div class="field-row">
-                <input type="file" id="cfgFileInput" accept=".cfg,.json" style="font-size:0.85rem; width:100%;">
-            </div>
         </fieldset>
     </div>
 
     <!-- Info Log -->
     <div id="log"></div>
-
-    <div class="bottom-bar">
-        <a href="#" id="helpLink" class="help-link">ⓘ Help me</a>
-    </div>
 
     <!-- Touch Screen Input Bar -->
     <div class="touch-pad-container">
@@ -475,12 +524,15 @@
             </tbody>
         </table>
 
-        <p>Shortcuts:</p>
+        <p>Shortcuts & Shorthand Keys:</p>
         <table class="help-table">
             <tbody>
+                <tr><td>F1 – F5</td><td>Insert Shorthand Text</td></tr>
+                <tr><td>Long-Press F1–F5</td><td>Configure Shorthands</td></tr>
+                <tr><td>Undo/Clear (Tap)</td><td>Undo last F-key text insertion</td></tr>
+                <tr><td>Undo/Clear (Hold)</td><td>Clear entire unsent text box</td></tr>
                 <tr><td>\</td><td>Straight key</td></tr>
-                <tr><td>-</td><td>Decrease speed</td></tr>
-                <tr><td>=</td><td>Increase speed</td></tr>
+                <tr><td>- / =</td><td>Adjust Speed (WPM)</td></tr>
                 <tr><td>CTRL-ENTER</td><td>Toggle TX</td></tr>
             </tbody>
         </table>
@@ -492,9 +544,44 @@
     </div>
 </div>
 
+<!-- Shorthand Configuration Modal -->
+<div id="macroModal" class="modal-overlay">
+    <div class="modal-card">
+        <h2 style="margin-top:0; color: var(--accent-blue);">Shorthand Configurations</h2>
+        <p style="font-size: 0.85rem; color: #555; margin-bottom: 12px;">Define custom shorthand texts to send via F1–F5 buttons or keyboard keys:</p>
+
+        <div class="macro-config-row">
+            <label for="cfgF1">F1:</label>
+            <input type="text" id="cfgF1" placeholder="e.g. CQ CQ CQ DE A65IV">
+        </div>
+        <div class="macro-config-row">
+            <label for="cfgF2">F2:</label>
+            <input type="text" id="cfgF2" placeholder="e.g. UR 599 599 BK">
+        </div>
+        <div class="macro-config-row">
+            <label for="cfgF3">F3:</label>
+            <input type="text" id="cfgF3" placeholder="e.g. TU 73 E E">
+        </div>
+        <div class="macro-config-row">
+            <label for="cfgF4">F4:</label>
+            <input type="text" id="cfgF4" placeholder="e.g. QRZ? DE A65IV">
+        </div>
+        <div class="macro-config-row">
+            <label for="cfgF5">F5:</label>
+            <input type="text" id="cfgF5" placeholder="e.g. RRR 73">
+        </div>
+
+        <div style="display: flex; gap: 10px; margin-top: 15px;">
+            <button id="btnSaveMacros" class="btn" style="flex: 1; background: var(--accent-blue); color: #fff;">Save & Close</button>
+            <button id="btnCancelMacros" class="btn" style="flex: 1;">Cancel</button>
+        </div>
+    </div>
+</div>
+
 <script>
     // Constants
-    const RISE_FALL_MS = 8; // Default fixed rise/fall time
+    const RISE_FALL_MS = 8;
+    const STORAGE_KEY = 'web_morse_keyer_cfg_v1';
 
     // Global Audio Context & Nodes
     let audioCtx = null;
@@ -525,7 +612,19 @@
     let touchDit = false;
     let touchDah = false;
 
-    // Elements
+    // Last inserted shorthand tracking for Undo
+    let lastInsertedText = "";
+
+    // Shorthand Macros (Default Values)
+    let shorthandMacros = {
+        F1: "CQ CQ CQ DE A65IV K",
+        F2: "UR 599 BK",
+        F3: "TU 73 SK",
+        F4: "QRZ? DE A65IV",
+        F5: "RRR 73"
+    };
+
+    // UI Elements
     const wpmSlider = document.getElementById('wpmSlider');
     const wpmVal = document.getElementById('wpmVal');
     const toneFreqSlider = document.getElementById('toneFreqSlider');
@@ -539,21 +638,29 @@
     const portSelect = document.getElementById('portSelect');
     const btnAuthorize = document.getElementById('btnAuthorize');
     const btnDisconnect = document.getElementById('btnDisconnect');
-    const btnSaveCfg = document.getElementById('btnSaveCfg');
-    const cfgFileInput = document.getElementById('cfgFileInput');
     const connPill = document.getElementById('connPill');
     const audioDevicesSelect = document.getElementById('audioDevices');
     const btnScanAudio = document.getElementById('btnScanAudio');
     const txInput = document.getElementById('txInput');
     const sentDisplay = document.getElementById('sentDisplay');
     const btnTX = document.getElementById('btnTX');
-    const btnClearSent = document.getElementById('btnClearSent');
-    const helpLink = document.getElementById('helpLink');
+    const btnUndoClear = document.getElementById('btnUndoClear');
+    const btnHelpInline = document.getElementById('btnHelpInline');
     const helpModal = document.getElementById('helpModal');
     const closeHelpModal = document.getElementById('closeHelpModal');
-    const settingsHeader = document.getElementById('settingsHeader');
+    const settingsTitleClick = document.getElementById('settingsTitleClick');
     const settingsContent = document.getElementById('settingsContent');
     const settingsArrow = document.getElementById('settingsArrow');
+
+    // Macro Config Elements
+    const macroModal = document.getElementById('macroModal');
+    const cfgF1 = document.getElementById('cfgF1');
+    const cfgF2 = document.getElementById('cfgF2');
+    const cfgF3 = document.getElementById('cfgF3');
+    const cfgF4 = document.getElementById('cfgF4');
+    const cfgF5 = document.getElementById('cfgF5');
+    const btnSaveMacros = document.getElementById('btnSaveMacros');
+    const btnCancelMacros = document.getElementById('btnCancelMacros');
 
     const touchLeft = document.getElementById('touchLeft');
     const touchStraight = document.getElementById('touchStraight');
@@ -579,31 +686,170 @@
         div.scrollTop = div.scrollHeight;
     }
 
+    // --- localStorage Parameter Management ---
+    function saveAllParams() {
+        const config = {
+            wpm: wpmSlider.value,
+            mode: getMode(),
+            modeA: chkModeA.checked,
+            swap: chkSwap.checked,
+            toneFreq: toneFreqSlider.value,
+            volume: volumeSlider.value,
+            audioDeviceId: audioDevicesSelect.value,
+            macros: shorthandMacros
+        };
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
+        } catch (e) {}
+    }
+
+    function loadAllParams() {
+        try {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            if (!stored) return;
+            const cfg = JSON.parse(stored);
+
+            if (cfg.wpm) { wpmSlider.value = cfg.wpm; wpmVal.textContent = cfg.wpm; }
+            if (cfg.mode) document.querySelector(`input[name="keyerMode"][value="${cfg.mode}"]`).checked = true;
+            if (cfg.modeA !== undefined) chkModeA.checked = cfg.modeA;
+            if (cfg.swap !== undefined) chkSwap.checked = cfg.swap;
+            if (cfg.toneFreq) { toneFreqSlider.value = cfg.toneFreq; toneFreqVal.textContent = cfg.toneFreq; }
+            if (cfg.volume) { volumeSlider.value = cfg.volume; volumeVal.textContent = `${cfg.volume}%`; }
+            if (cfg.macros) shorthandMacros = Object.assign(shorthandMacros, cfg.macros);
+
+            log("Settings loaded from local storage.");
+        } catch (e) {}
+    }
+
     // Toggle Collapsible Settings Panel
-    settingsHeader.addEventListener('click', () => {
+    settingsTitleClick.addEventListener('click', () => {
         const isOpen = settingsContent.classList.toggle('open');
         settingsArrow.textContent = isOpen ? '▲' : '▼';
     });
 
-    // Modal Control
-    helpLink.addEventListener('click', (e) => { e.preventDefault(); helpModal.style.display = 'flex'; });
+    // Help Modal Controls
+    btnHelpInline.addEventListener('click', (e) => { e.preventDefault(); helpModal.style.display = 'flex'; });
     closeHelpModal.addEventListener('click', () => { helpModal.style.display = 'none'; });
+
+    // Shorthand Macro Modal Controls
+    function openMacroConfigModal() {
+        cfgF1.value = shorthandMacros.F1 || '';
+        cfgF2.value = shorthandMacros.F2 || '';
+        cfgF3.value = shorthandMacros.F3 || '';
+        cfgF4.value = shorthandMacros.F4 || '';
+        cfgF5.value = shorthandMacros.F5 || '';
+        macroModal.style.display = 'flex';
+    }
+
+    btnSaveMacros.addEventListener('click', () => {
+        shorthandMacros.F1 = cfgF1.value;
+        shorthandMacros.F2 = cfgF2.value;
+        shorthandMacros.F3 = cfgF3.value;
+        shorthandMacros.F4 = cfgF4.value;
+        shorthandMacros.F5 = cfgF5.value;
+        saveAllParams();
+        macroModal.style.display = 'none';
+        log("Shorthand definitions saved.");
+    });
+
+    btnCancelMacros.addEventListener('click', () => {
+        macroModal.style.display = 'none';
+    });
+
+    // Shorthand Execution Logic
+    function executeShorthand(keyName) {
+        if (shorthandMacros[keyName]) {
+            const currentVal = txInput.value;
+            const prefixSpace = (currentVal.length > 0 && !currentVal.endsWith(' ')) ? ' ' : '';
+            const textToAdd = prefixSpace + shorthandMacros[keyName];
+            
+            txInput.value = currentVal + textToAdd;
+            lastInsertedText = textToAdd; // Track for Undo functionality
+            log(`Triggered ${keyName} shorthand.`);
+        }
+    }
+
+    // Bind Shorthand Buttons (F1 - F5: Click & Long Press)
+    ['F1', 'F2', 'F3', 'F4', 'F5'].forEach(key => {
+        const btn = document.getElementById(`btn${key}`);
+        let pressTimer = null;
+        let isLongPress = false;
+
+        function startPress() {
+            isLongPress = false;
+            pressTimer = setTimeout(() => {
+                isLongPress = true;
+                openMacroConfigModal();
+            }, 600);
+        }
+
+        function endPress(e) {
+            if (e) e.preventDefault();
+            clearTimeout(pressTimer);
+            if (!isLongPress) {
+                executeShorthand(key);
+            }
+        }
+
+        btn.addEventListener('touchstart', (e) => { e.preventDefault(); startPress(); }, { passive: false });
+        btn.addEventListener('touchend', (e) => { endPress(e); }, { passive: false });
+        btn.addEventListener('mousedown', () => startPress());
+        btn.addEventListener('mouseup', (e) => endPress(e));
+        btn.addEventListener('mouseleave', () => clearTimeout(pressTimer));
+    });
+
+    // Undo / Clear Button Handler (Tap = Undo last shorthand, Long-Press = Clear all)
+    let undoClearTimer = null;
+    let isUndoClearLongPress = false;
+
+    function startUndoClearPress() {
+        isUndoClearLongPress = false;
+        undoClearTimer = setTimeout(() => {
+            isUndoClearLongPress = true;
+            txInput.value = '';
+            lastInsertedText = "";
+            log("Cleared entire unsent text box.");
+        }, 600);
+    }
+
+    function endUndoClearPress(e) {
+        if (e) e.preventDefault();
+        clearTimeout(undoClearTimer);
+
+        if (!isUndoClearLongPress) {
+            // Perform Undo of the last F-key shorthand insertion
+            if (lastInsertedText && txInput.value.endsWith(lastInsertedText)) {
+                txInput.value = txInput.value.slice(0, -lastInsertedText.length);
+                log("Undid last F-key shorthand insertion.");
+                lastInsertedText = "";
+            } else {
+                log("Nothing to undo.");
+            }
+        }
+    }
+
+    btnUndoClear.addEventListener('touchstart', (e) => { e.preventDefault(); startUndoClearPress(); }, { passive: false });
+    btnUndoClear.addEventListener('touchend', (e) => { endUndoClearPress(e); }, { passive: false });
+    btnUndoClear.addEventListener('mousedown', () => startUndoClearPress());
+    btnUndoClear.addEventListener('mouseup', (e) => endUndoClearPress(e));
+    btnUndoClear.addEventListener('mouseleave', () => clearTimeout(undoClearTimer));
 
     // Auto-blur controls so keyboard shortcuts always work
     document.addEventListener('mouseup', (e) => {
         if (['INPUT', 'SELECT', 'BUTTON'].includes(e.target.tagName)) {
-            if (e.target.id === 'txInput') return;
+            if (e.target.id === 'txInput' || e.target.closest('#macroModal')) return;
             setTimeout(() => e.target.blur(), 50);
         }
     });
 
-    // Slider Listeners
-    wpmSlider.addEventListener('input', () => { wpmVal.textContent = wpmSlider.value; });
+    // Slider Listeners with Auto-Save
+    wpmSlider.addEventListener('input', () => { wpmVal.textContent = wpmSlider.value; saveAllParams(); });
     toneFreqSlider.addEventListener('input', () => {
         toneFreqVal.textContent = toneFreqSlider.value;
         if (oscNode && audioCtx) {
             oscNode.frequency.setValueAtTime(parseFloat(toneFreqSlider.value), audioCtx.currentTime);
         }
+        saveAllParams();
     });
     volumeSlider.addEventListener('input', () => {
         const val = volumeSlider.value;
@@ -611,6 +857,7 @@
         if (masterGainNode && audioCtx) {
             masterGainNode.gain.setValueAtTime(parseFloat(val) / 100, audioCtx.currentTime);
         }
+        saveAllParams();
     });
 
     // Audio Engine
@@ -665,6 +912,7 @@
             try {
                 await audioCtx.setSinkId(audioDevicesSelect.value);
                 log(`Audio routed.`);
+                saveAllParams();
             } catch (err) { log(`Audio Route Error: ${err.message}`); }
         }
     });
@@ -672,7 +920,6 @@
     function startSound(type = null) {
         initAudio();
 
-        // Color Flashes applied to the middle touch pad ("S")
         if (type === 'dit') {
             touchStraight.classList.add('dit-active');
             touchStraight.classList.remove('dah-active');
@@ -691,7 +938,6 @@
     }
 
     function stopSound() {
-        // Reset color flashes on middle touch pad ("S")
         touchStraight.classList.remove('dit-active');
         touchStraight.classList.remove('dah-active');
 
@@ -815,7 +1061,7 @@
         if (!isTXActive) return;
         const text = txInput.value;
         
-        // Manual mode: If no text left, keep TX active and poll again
+        // Manual TX mode: If input is empty, remain active and wait for new text/shorthand
         if (!text || text.length === 0) { 
             txTimer = setTimeout(processTXQueue, 200);
             return; 
@@ -863,7 +1109,7 @@
     btnTX.addEventListener('click', toggleTX);
     btnClearSent.addEventListener('click', () => { sentDisplay.textContent = ''; });
 
-    // Key / Mouse / Touch Event Handlers
+    // Mouse, Touch & Key Input Event Listeners
     let mouseDit = false, mouseDah = false, keyDit = false, keyDah = false;
     function updateInputs() { setPhysicalState(mouseDit || keyDit || touchDit, mouseDah || keyDah || touchDah); }
 
@@ -898,8 +1144,17 @@
     bindTouchEvents(touchStraight, () => { isDirectTonePressed = true; startSound('dit'); }, () => { isDirectTonePressed = false; stopSound(); });
     bindTouchEvents(touchRight, () => { touchDah = true; updateInputs(); }, () => { touchDah = false; updateInputs(); });
 
+    // Keyboard Handler (Supports F1-F5 Function Keys)
     window.addEventListener('keydown', (e) => {
         if (e.ctrlKey && e.key === 'Enter') { e.preventDefault(); toggleTX(); return; }
+
+        // Function Key Shorthands (F1 - F5)
+        if (['F1', 'F2', 'F3', 'F4', 'F5'].includes(e.key)) {
+            e.preventDefault();
+            executeShorthand(e.key);
+            return;
+        }
+
         if (e.key === '\\') {
             if (!isDirectTonePressed) { isDirectTonePressed = true; initAudio(); startSound('dit'); }
             return;
@@ -917,10 +1172,12 @@
             e.preventDefault();
             const val = Math.max(5, parseInt(wpmSlider.value, 10) - 1);
             wpmSlider.value = val; wpmVal.textContent = val;
+            saveAllParams();
         } else if (e.key === '=' || e.key === '+') {
             e.preventDefault();
             const val = Math.min(30, parseInt(wpmSlider.value, 10) + 1);
             wpmSlider.value = val; wpmVal.textContent = val;
+            saveAllParams();
         }
     });
 
@@ -930,15 +1187,16 @@
         else if (e.key === ']') { keyDah = false; updateInputs(); }
     });
 
-    document.querySelectorAll('input[name="keyerMode"]').forEach(radio => {
-        radio.addEventListener('change', () => {
+    document.querySelectorAll('input[name="keyerMode"], input[type="checkbox"]').forEach(input => {
+        input.addEventListener('change', () => {
             stopSound(); if (keyerTimer) clearTimeout(keyerTimer);
             keyerTimer = null; currentElement = null; latchMemory = null;
+            saveAllParams();
             processKeyerLoop();
         });
     });
 
-    // Serial Integration
+    // Serial
     async function closeSerialPort() {
         if (pollInterval) { clearInterval(pollInterval); pollInterval = null; }
         if (activePort) { try { await activePort.close(); } catch (err) {} activePort = null; }
@@ -1006,44 +1264,8 @@
         await openAndMonitorPort(authorizedPorts[idx]);
     });
 
-    btnSaveCfg.addEventListener('click', () => {
-        const idx = portSelect.value;
-        let portInfo = (idx !== "" && authorizedPorts[idx]) ? authorizedPorts[idx].getInfo() : {};
-        const config = {
-            mode: getMode(), wpm: wpmSlider.value, modeA: chkModeA.checked, swap: chkSwap.checked,
-            toneFreq: toneFreqSlider.value, volume: volumeSlider.value, audioDeviceId: audioDevicesSelect.value,
-            usbVendorId: portInfo.usbVendorId || null, usbProductId: portInfo.usbProductId || null
-        };
-        const blob = new Blob([JSON.stringify(config, null, 2)], { type: 'application/json' });
-        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'serstat.cfg'; a.click();
-        URL.revokeObjectURL(a.href);
-    });
-
-    cfgFileInput.addEventListener('change', (e) => {
-        const file = e.target.files[0]; if (!file) return;
-        const reader = new FileReader();
-        reader.onload = async (event) => {
-            try {
-                const cfg = JSON.parse(event.target.result);
-                if (cfg.mode) document.querySelector(`input[name="keyerMode"][value="${cfg.mode}"]`).checked = true;
-                if (cfg.wpm) { wpmSlider.value = cfg.wpm; wpmVal.textContent = cfg.wpm; }
-                if (cfg.modeA !== undefined) chkModeA.checked = cfg.modeA;
-                if (cfg.swap !== undefined) chkSwap.checked = cfg.swap;
-                if (cfg.toneFreq) { toneFreqSlider.value = cfg.toneFreq; toneFreqVal.textContent = cfg.toneFreq; }
-                if (cfg.volume) { volumeSlider.value = cfg.volume; volumeVal.textContent = `${cfg.volume}%`; }
-
-                await refreshPortList();
-                let matchIdx = -1;
-                authorizedPorts.forEach((port, index) => {
-                    const info = port.getInfo();
-                    if (info.usbVendorId === cfg.usbVendorId && info.usbProductId === cfg.usbProductId) matchIdx = index;
-                });
-                if (matchIdx !== -1) { portSelect.selectedIndex = matchIdx; await openAndMonitorPort(authorizedPorts[matchIdx]); }
-            } catch (err) {}
-        };
-        reader.readAsText(file);
-    });
-
+    // Startup Init
+    loadAllParams();
     refreshPortList();
 </script>
 </body>
