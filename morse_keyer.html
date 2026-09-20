@@ -124,6 +124,16 @@
             background: #cce4f7;
         }
 
+        .btn-macro-cancel {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+
+        .btn-macro-cancel:active {
+            background: #f5c6cb;
+        }
+
         /* Text Transmitter Area */
         .sent-text-display {
             background-color: #111;
@@ -392,15 +402,15 @@
             <button id="btnF2" class="btn-macro" title="Press or Long-Press to Configure">F2</button>
             <button id="btnF3" class="btn-macro" title="Press or Long-Press to Configure">F3</button>
             <button id="btnF4" class="btn-macro" title="Press or Long-Press to Configure">F4</button>
-            <button id="btnF5" class="btn-macro" title="Press or Long-Press to Configure">F5</button>
+            <button id="btnF5" class="btn-macro btn-macro-cancel" title="F5: Clear unsent text">F5</button>
         </div>
 
         <div id="sentDisplay" class="sent-text-display"></div>
-        <textarea id="txInput" class="tx-textarea" placeholder="Type text or tap F1-F5... (Ctrl+Enter to Start/Stop TX)"></textarea>
+        <textarea id="txInput" class="tx-textarea" placeholder="Type text or tap F1-F4... (Ctrl+Enter to Start/Stop TX)"></textarea>
         
         <div style="display: flex; gap: 10px; margin-top: 8px;">
             <button id="btnTX" class="btn btn-tx" style="flex: 2;">TX</button>
-            <button id="btnUndoClear" class="btn" style="flex: 1.5; font-size:0.9rem;" title="Tap: Undo last F-key insertion | Long-Press: Clear all">Undo/Clear</button>
+            <button id="btnClearSent" class="btn" style="flex: 1;">Clear</button>
         </div>
     </fieldset>
 
@@ -527,10 +537,9 @@
         <p>Shortcuts & Shorthand Keys:</p>
         <table class="help-table">
             <tbody>
-                <tr><td>F1 – F5</td><td>Insert Shorthand Text</td></tr>
+                <tr><td>F1 – F4</td><td>Insert Shorthand Text</td></tr>
+                <tr><td>F5</td><td>Cancel / Clear unsent text</td></tr>
                 <tr><td>Long-Press F1–F5</td><td>Configure Shorthands</td></tr>
-                <tr><td>Undo/Clear (Tap)</td><td>Undo last F-key text insertion</td></tr>
-                <tr><td>Undo/Clear (Hold)</td><td>Clear entire unsent text box</td></tr>
                 <tr><td>\</td><td>Straight key</td></tr>
                 <tr><td>- / =</td><td>Adjust Speed (WPM)</td></tr>
                 <tr><td>CTRL-ENTER</td><td>Toggle TX</td></tr>
@@ -548,7 +557,7 @@
 <div id="macroModal" class="modal-overlay">
     <div class="modal-card">
         <h2 style="margin-top:0; color: var(--accent-blue);">Shorthand Configurations</h2>
-        <p style="font-size: 0.85rem; color: #555; margin-bottom: 12px;">Define custom shorthand texts to send via F1–F5 buttons or keyboard keys:</p>
+        <p style="font-size: 0.85rem; color: #555; margin-bottom: 12px;">Define custom shorthand texts to send via F1–F4 buttons or keyboard keys:</p>
 
         <div class="macro-config-row">
             <label for="cfgF1">F1:</label>
@@ -568,7 +577,7 @@
         </div>
         <div class="macro-config-row">
             <label for="cfgF5">F5:</label>
-            <input type="text" id="cfgF5" placeholder="e.g. RRR 73">
+            <input type="text" id="cfgF5" value="[CANCEL / CLEAR UNSENT TEXT]" disabled style="background:#eee; color:#666;">
         </div>
 
         <div style="display: flex; gap: 10px; margin-top: 15px;">
@@ -612,16 +621,12 @@
     let touchDit = false;
     let touchDah = false;
 
-    // Last inserted shorthand tracking for Undo
-    let lastInsertedText = "";
-
     // Shorthand Macros (Default Values)
     let shorthandMacros = {
         F1: "CQ CQ CQ DE A65IV K",
         F2: "UR 599 BK",
         F3: "TU 73 SK",
-        F4: "QRZ? DE A65IV",
-        F5: "RRR 73"
+        F4: "QRZ? DE A65IV"
     };
 
     // UI Elements
@@ -644,7 +649,7 @@
     const txInput = document.getElementById('txInput');
     const sentDisplay = document.getElementById('sentDisplay');
     const btnTX = document.getElementById('btnTX');
-    const btnUndoClear = document.getElementById('btnUndoClear');
+    const btnClearSent = document.getElementById('btnClearSent');
     const btnHelpInline = document.getElementById('btnHelpInline');
     const helpModal = document.getElementById('helpModal');
     const closeHelpModal = document.getElementById('closeHelpModal');
@@ -658,7 +663,6 @@
     const cfgF2 = document.getElementById('cfgF2');
     const cfgF3 = document.getElementById('cfgF3');
     const cfgF4 = document.getElementById('cfgF4');
-    const cfgF5 = document.getElementById('cfgF5');
     const btnSaveMacros = document.getElementById('btnSaveMacros');
     const btnCancelMacros = document.getElementById('btnCancelMacros');
 
@@ -737,7 +741,6 @@
         cfgF2.value = shorthandMacros.F2 || '';
         cfgF3.value = shorthandMacros.F3 || '';
         cfgF4.value = shorthandMacros.F4 || '';
-        cfgF5.value = shorthandMacros.F5 || '';
         macroModal.style.display = 'flex';
     }
 
@@ -746,7 +749,6 @@
         shorthandMacros.F2 = cfgF2.value;
         shorthandMacros.F3 = cfgF3.value;
         shorthandMacros.F4 = cfgF4.value;
-        shorthandMacros.F5 = cfgF5.value;
         saveAllParams();
         macroModal.style.display = 'none';
         log("Shorthand definitions saved.");
@@ -758,18 +760,21 @@
 
     // Shorthand Execution Logic
     function executeShorthand(keyName) {
+        if (keyName === 'F5') {
+            txInput.value = ''; // Cancel/Clear unsent text
+            log("F5 pressed: Unsent text cleared.");
+            return;
+        }
+
         if (shorthandMacros[keyName]) {
             const currentVal = txInput.value;
             const prefixSpace = (currentVal.length > 0 && !currentVal.endsWith(' ')) ? ' ' : '';
-            const textToAdd = prefixSpace + shorthandMacros[keyName];
-            
-            txInput.value = currentVal + textToAdd;
-            lastInsertedText = textToAdd; // Track for Undo functionality
+            txInput.value = currentVal + prefixSpace + shorthandMacros[keyName];
             log(`Triggered ${keyName} shorthand.`);
         }
     }
 
-    // Bind Shorthand Buttons (F1 - F5: Click & Long Press)
+    // Bind Shorthand Buttons (Click & Long Press)
     ['F1', 'F2', 'F3', 'F4', 'F5'].forEach(key => {
         const btn = document.getElementById(`btn${key}`);
         let pressTimer = null;
@@ -780,7 +785,7 @@
             pressTimer = setTimeout(() => {
                 isLongPress = true;
                 openMacroConfigModal();
-            }, 600);
+            }, 600); // 600ms hold triggers Config Modal
         }
 
         function endPress(e) {
@@ -797,42 +802,6 @@
         btn.addEventListener('mouseup', (e) => endPress(e));
         btn.addEventListener('mouseleave', () => clearTimeout(pressTimer));
     });
-
-    // Undo / Clear Button Handler (Tap = Undo last shorthand, Long-Press = Clear all)
-    let undoClearTimer = null;
-    let isUndoClearLongPress = false;
-
-    function startUndoClearPress() {
-        isUndoClearLongPress = false;
-        undoClearTimer = setTimeout(() => {
-            isUndoClearLongPress = true;
-            txInput.value = '';
-            lastInsertedText = "";
-            log("Cleared entire unsent text box.");
-        }, 600);
-    }
-
-    function endUndoClearPress(e) {
-        if (e) e.preventDefault();
-        clearTimeout(undoClearTimer);
-
-        if (!isUndoClearLongPress) {
-            // Perform Undo of the last F-key shorthand insertion
-            if (lastInsertedText && txInput.value.endsWith(lastInsertedText)) {
-                txInput.value = txInput.value.slice(0, -lastInsertedText.length);
-                log("Undid last F-key shorthand insertion.");
-                lastInsertedText = "";
-            } else {
-                log("Nothing to undo.");
-            }
-        }
-    }
-
-    btnUndoClear.addEventListener('touchstart', (e) => { e.preventDefault(); startUndoClearPress(); }, { passive: false });
-    btnUndoClear.addEventListener('touchend', (e) => { endUndoClearPress(e); }, { passive: false });
-    btnUndoClear.addEventListener('mousedown', () => startUndoClearPress());
-    btnUndoClear.addEventListener('mouseup', (e) => endUndoClearPress(e));
-    btnUndoClear.addEventListener('mouseleave', () => clearTimeout(undoClearTimer));
 
     // Auto-blur controls so keyboard shortcuts always work
     document.addEventListener('mouseup', (e) => {
