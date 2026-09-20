@@ -55,3 +55,11 @@ A lightweight, feature-rich browser-based Morse Code keyer and transmitter desig
 ## 🔌 Serial Port Hardware Hookup
 
 To connect physical Morse paddles using an external USB-to-Serial adapter (e.g., FTDI, CH340, CP2102):
+
+---
+
+## 🙏 Credits & Acknowledgments
+
+- **Inspiration:** Inspired by the original Morse Keyer Windows application developed by **Robert B. Denny** (`rdenny@dc3.com`).
+- **Creator:** **Judhi A65IV** (`judhi.a65iv@gmail.com`)
+- **AI Collaborator:** Developed in collaboration with **Gemini** (Google AI) as a vibe coding assistant for code architecture, UI refactoring, and mobile touch optimization.
