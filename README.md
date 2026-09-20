@@ -10,7 +10,7 @@ Welcome to **Web Morse Keyer v1.0**! This is a browser-based Morse code keyer th
 
 You can use any of these input options to key the application:
 
-| Function | Keyboard | Serial I/O Port | Mouse Keying Area |
+| Function | Keyboard | Serial I/O Port | Mouse over Title Bar |
 | :--- | :---: | :---: | :---: |
 | **Left paddle (Dit)** | `[` | CTS | Left button |
 | **Right paddle (Dah)** | `]` | DSR | Right button |
