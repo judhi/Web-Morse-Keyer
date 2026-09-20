@@ -23,12 +23,12 @@
             box-sizing: border-box;
             user-select: none;
             -webkit-user-select: none;
-            font-size: 18px; /* High legibility font base */
+            font-size: 18px;
         }
 
         .window {
             width: 100%;
-            max-width: 480px; /* Mobile vertical portrait container */
+            max-width: 480px;
             margin: 0 auto;
             background-color: var(--panel-bg);
             border: 2px solid var(--border-color);
@@ -38,43 +38,26 @@
             box-sizing: border-box;
         }
 
+        /* Title Bar repurposed as Top Mouse Keying Area */
         .title-bar {
             font-weight: bold;
-            font-size: 1.4rem;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--accent-blue);
-        }
-
-        /* 1. Mouse Keying Area at the top */
-        .keying-area {
-            background-color: #0000ff;
-            color: #ffff00;
-            font-weight: bold;
             font-size: 1.3rem;
-            height: 110px;
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            text-align: center;
-            border: 2px inset #fff;
+            gap: 8px;
+            color: #ffffff;
+            background-color: var(--accent-blue);
+            padding: 12px;
             border-radius: 6px;
             cursor: pointer;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
-            padding: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
             box-sizing: border-box;
-            transition: background-color 0.05s ease;
-            margin-bottom: 12px;
         }
 
-        .keying-area.dit-active {
-            background-color: #4b0082 !important; /* Dark Purple */
-        }
-
-        .keying-area.dah-active {
-            background-color: #004d1a !important; /* Dark Green */
+        .title-bar:active {
+            filter: brightness(1.2);
         }
 
         fieldset {
@@ -118,7 +101,7 @@
             cursor: pointer;
         }
 
-        /* 2. Text Transmitter (Always Visible) */
+        /* Text Transmitter (Always Visible) */
         .sent-text-display {
             background-color: #111;
             color: #00ff00;
@@ -175,7 +158,7 @@
             box-shadow: 0 0 10px #ff0000;
         }
 
-        /* 3. Collapsible Settings Panel */
+        /* Collapsible Settings Panel */
         .collapsible-header {
             background-color: #e0e0e8;
             border: 1px solid var(--border-color);
@@ -225,7 +208,7 @@
 
         .status-pill.connected { background: #00e676; box-shadow: 0 0 5px #00e676; }
 
-        /* 4. Touch Pads at Bottom */
+        /* Touch Pads at Bottom */
         .touch-pad-container {
             display: flex;
             width: 100%;
@@ -250,6 +233,7 @@
             user-select: none;
             -webkit-user-select: none;
             border-right: 1px solid #333;
+            transition: background-color 0.05s ease;
         }
 
         .touch-pad:last-child { border-right: none; }
@@ -257,8 +241,16 @@
         .touch-pad-middle { background-color: #444444; }
         .touch-pad-right { background-color: #777777; }
 
+        .touch-pad-middle.dit-active {
+            background-color: #4b0082 !important; /* Dark Purple for Dit */
+        }
+
+        .touch-pad-middle.dah-active {
+            background-color: #004d1a !important; /* Dark Green for Dah */
+        }
+
         .touch-pad:active, .touch-pad.active {
-            filter: brightness(1.3);
+            filter: brightness(1.2);
         }
 
         .bottom-bar {
@@ -329,13 +321,9 @@
 <body>
 
 <div class="window">
-    <div class="title-bar">
+    <!-- Title Bar acts as Mouse Keying Area -->
+    <div id="titleKeyArea" class="title-bar" title="Left-click = Dit | Right-click = Dah">
         <span>☖</span> Web Morse Keyer v1.0
-    </div>
-
-    <!-- 1. Mouse Keying Area on Top -->
-    <div id="mouseKeyArea" class="keying-area">
-        Mouse keying area
     </div>
 
     <!-- Volume Control (Always Visible) -->
@@ -347,7 +335,7 @@
         </div>
     </fieldset>
 
-    <!-- 2. Text Transmitter (TX) Panel (Always Visible) -->
+    <!-- Text Transmitter (TX) Panel (Always Visible) -->
     <fieldset>
         <legend>Text Transmitter (TX)</legend>
         <div style="font-size: 0.85rem; color: #444; margin-bottom: 4px;">Sent Text Output:</div>
@@ -360,7 +348,7 @@
         </div>
     </fieldset>
 
-    <!-- 3. Collapsible Settings Panel -->
+    <!-- Collapsible Settings Panel -->
     <div id="settingsHeader" class="collapsible-header">
         <span>⚙ Settings</span>
         <span id="settingsArrow">▼</span>
@@ -448,7 +436,7 @@
         <a href="#" id="helpLink" class="help-link">ⓘ Help me</a>
     </div>
 
-    <!-- 4. Touch Screen Input Bar -->
+    <!-- Touch Screen Input Bar -->
     <div class="touch-pad-container">
         <div id="touchLeft" class="touch-pad touch-pad-left">L</div>
         <div id="touchStraight" class="touch-pad touch-pad-middle">S</div>
@@ -476,13 +464,13 @@
                     <td>Left paddle</td>
                     <td>[</td>
                     <td>CTS</td>
-                    <td>Left / Touch "L"</td>
+                    <td>Title Bar / Touch "L"</td>
                 </tr>
                 <tr>
                     <td>Right paddle</td>
                     <td>]</td>
                     <td>DSR</td>
-                    <td>Right / Touch "R"</td>
+                    <td>Title Right / Touch "R"</td>
                 </tr>
             </tbody>
         </table>
@@ -546,7 +534,7 @@
     const volumeVal = document.getElementById('volumeVal');
     const chkModeA = document.getElementById('chkModeA');
     const chkSwap = document.getElementById('chkSwap');
-    const mouseKeyArea = document.getElementById('mouseKeyArea');
+    const titleKeyArea = document.getElementById('titleKeyArea');
     const modeBIndicator = document.getElementById('modeBIndicator');
     const portSelect = document.getElementById('portSelect');
     const btnAuthorize = document.getElementById('btnAuthorize');
@@ -683,12 +671,14 @@
 
     function startSound(type = null) {
         initAudio();
+
+        // Color Flashes applied to the middle touch pad ("S")
         if (type === 'dit') {
-            mouseKeyArea.classList.add('dit-active');
-            mouseKeyArea.classList.remove('dah-active');
+            touchStraight.classList.add('dit-active');
+            touchStraight.classList.remove('dah-active');
         } else if (type === 'dah') {
-            mouseKeyArea.classList.add('dah-active');
-            mouseKeyArea.classList.remove('dit-active');
+            touchStraight.classList.add('dah-active');
+            touchStraight.classList.remove('dit-active');
         }
 
         if (isAudible) return;
@@ -701,8 +691,9 @@
     }
 
     function stopSound() {
-        mouseKeyArea.classList.remove('dit-active');
-        mouseKeyArea.classList.remove('dah-active');
+        // Reset color flashes on middle touch pad ("S")
+        touchStraight.classList.remove('dit-active');
+        touchStraight.classList.remove('dah-active');
 
         if (!audioCtx || !isAudible) return;
         isAudible = false;
@@ -823,7 +814,12 @@
     function processTXQueue() {
         if (!isTXActive) return;
         const text = txInput.value;
-        if (!text || text.length === 0) { stopTX(); return; }
+        
+        // Manual mode: If no text left, keep TX active and poll again
+        if (!text || text.length === 0) { 
+            txTimer = setTimeout(processTXQueue, 200);
+            return; 
+        }
 
         const char = text.charAt(0);
         txInput.value = text.substring(1);
@@ -867,26 +863,24 @@
     btnTX.addEventListener('click', toggleTX);
     btnClearSent.addEventListener('click', () => { sentDisplay.textContent = ''; });
 
-    // Key / Touch Event Handlers
+    // Key / Mouse / Touch Event Handlers
     let mouseDit = false, mouseDah = false, keyDit = false, keyDah = false;
     function updateInputs() { setPhysicalState(mouseDit || keyDit || touchDit, mouseDah || keyDah || touchDah); }
 
-    mouseKeyArea.addEventListener('mousedown', (e) => {
+    titleKeyArea.addEventListener('mousedown', (e) => {
         initAudio();
         e.preventDefault();
         if (e.button === 0) mouseDit = true;
         if (e.button === 2) mouseDah = true;
-        mouseKeyArea.classList.add('active');
         updateInputs();
     });
 
     window.addEventListener('mouseup', (e) => {
         if (e.button === 0) mouseDit = false;
         if (e.button === 2) mouseDah = false;
-        mouseKeyArea.classList.remove('active');
         updateInputs();
     });
-    mouseKeyArea.addEventListener('contextmenu', e => e.preventDefault());
+    titleKeyArea.addEventListener('contextmenu', e => e.preventDefault());
 
     function bindTouchEvents(elem, startFn, endFn) {
         elem.addEventListener('touchstart', (e) => {
@@ -944,7 +938,7 @@
         });
     });
 
-    // Serial
+    // Serial Integration
     async function closeSerialPort() {
         if (pollInterval) { clearInterval(pollInterval); pollInterval = null; }
         if (activePort) { try { await activePort.close(); } catch (err) {} activePort = null; }
